@@ -5,6 +5,9 @@
 #include <cstring>
 #include <ctime>
 #include <cerrno>
+#include <map>
+
+#include <chrono>
 
 #include <openssl/buffer.h>
 #include <openssl/sha.h>
@@ -12,13 +15,15 @@
 #include <openssl/bio.h>
 
 #include "kclient.hpp"
+#include "kassets.hpp"
+#include "kspread.hpp"
 #include "../libjson/libjson.h"
 
 #define CURL_VERBOSE 0L //1L = enabled, 0L = disabled
 
 //------------------------------------------------------------------------------
 
-namespace Kraken {
+namespace kraken {
 
 //------------------------------------------------------------------------------
 // helper function to compute SHA256:
@@ -85,15 +90,16 @@ hmac_sha512(const std::vector<unsigned char>& data,
    unsigned int len = EVP_MAX_MD_SIZE;
    std::vector<unsigned char> digest(len);
 
-   HMAC_CTX *ctx = HMAC_CTX_new();
-   //HMAC_CTX_init(&ctx);
+   HMAC_CTX *ctx;
+   //HMAC_CTX *ctx = HMAC_CTX_new();
+   HMAC_CTX_init(ctx);
 
    HMAC_Init_ex(ctx, key.data(), key.size(), EVP_sha512(), NULL);
    HMAC_Update(ctx, data.data(), data.size());
    HMAC_Final(ctx, digest.data(), &len);
    
-   HMAC_CTX_free(ctx);
-   //HMAC_CTX_cleanup(&ctx);
+   //HMAC_CTX_free(ctx);
+   HMAC_CTX_cleanup(ctx);
    
    return digest;
 }
@@ -301,76 +307,235 @@ std::string KClient::private_method(const std::string& method,
    return response;
 }
 
+std::string KClient::orderbook(const std::string &pair,
+			       const std::string &since,
+			       KOrderBook &kb)
+{
+  // url options
+  KInput ki;
+  ki["pair"] = pair;
+  ki["since"] = since;
+
+  json_string data = libjson::to_json_string(public_method("Depth",ki));
+  JSONNode root = libjson::parse(data);
+  cout << data << endl;
+  // throw exception on error in JSON response
+  if(!root["error"].empty()){
+    std::ostringstream oss;
+    oss << "Kraken response contains errors: ";
+    for(JSONNode::const_iterator it = root["error"].begin(); it != root["error"].end(); ++it){
+      oss << std::endl << " * " << libjson::to_std_string(it->as_string());
+    }
+    throw std::runtime_error(oss.str());
+  }
+  
+  // throw exception on empty json result
+  if(root["result"].empty()){
+    throw std::runtime_error("Kraken response empty");
+  }
+
+  JSONNode &result = root["result"];
+  
+  for(JSONNode::iterator it=result.begin(); it!=result.end(); ++it){
+    //std::ostringstream oss;
+    kb.pair = libjson::to_std_string(it->name());
+    for(JSONNode::iterator it2=it->begin(); it2 != it->end(); ++(it2)){
+      //oss << it2->name();
+      //oss << std::endl;
+      for(JSONNode::iterator it3=it2->begin(); it3 != it2->end(); ++(it3)){
+	//oss << (*it3)[0].as_float() << " ; " << (*it3)[1].as_float() << " ; " << (*it3)[2].as_int() << std::endl;
+	if(std::string("asks").compare(it2->name())==0){
+	  kb.lAsks.push_back(KOrder());
+	}
+	if(std::string("bids").compare(it2->name())==0){
+	  
+	}
+      }
+    }
+    //oss << std::endl;
+    //std::cout << oss.str();
+  }
+
+  return libjson::to_std_string(data); // pair name from server
+  
+}
+  
 //------------------------------------------------------------------------------
 // downloads recent trade data:
-std::string KClient::trades(const std::string& pair, 
-			    const std::string& since,
-			    std::vector<KTrade>& output)
-{
-   KInput ki;
-   ki["pair"] = pair;
-   ki["since"] = since;
-
-   // download and parse data
-   json_string data = libjson::to_json_string( public_method("Trades", ki) ); 
-   JSONNode root = libjson::parse(data);
-
-
-
-   // throw an exception if there are errors in the JSON response
-   if (!root.at("error").empty()) {
+  std::string KClient::trades(const std::string& pair, 
+			      const std::string& since,
+			      std::vector<KTrade>& output)
+  {
+    KInput ki;
+    ki["pair"] = pair;
+    ki["since"] = since;
+    
+    // download and parse data
+    json_string data = libjson::to_json_string( public_method("Trades", ki) ); 
+    JSONNode root = libjson::parse(data);
+    
+    // throw an exception if there are errors in the JSON response
+    if (!root.at("error").empty()) {
       std::ostringstream oss;
       oss << "Kraken response contains errors: ";
       
       // append errors to output string stream
-      for (JSONNode::const_iterator
-	      it = root["error"].begin(); it != root["error"].end(); ++it) 
-	 oss << std::endl << " * " << libjson::to_std_string(it->as_string());
+      for (JSONNode::const_iterator it = root["error"].begin(); it != root["error"].end(); ++it) 
+	oss << std::endl << " * " << libjson::to_std_string(it->as_string());
       
       throw std::runtime_error(oss.str());
-   }
-
-   // throw an exception if result is empty   
-   if (root.at("result").empty()) {
+    }
+    
+    // throw an exception if result is empty   
+    if (root.at("result").empty()) {
       throw std::runtime_error("Kraken response doesn't contain result data");
-   }
-
-
-
-   JSONNode &result = root["result"];
-   JSONNode &result_pair = result[0];
-   std::string last = libjson::to_std_string( result.at("last").as_string() );
-
-   std::vector<KTrade> buf;
-   for (JSONNode::const_iterator 
-	   it = result_pair.begin(); it != result_pair.end(); ++it)
+    }
+    
+    JSONNode &result = root["result"];
+    JSONNode &result_pair = result[0];
+    
+    std::string last = libjson::to_std_string( result.at("last").as_string() );
+    
+    std::vector<KTrade> buf;
+    for (JSONNode::const_iterator it = result_pair.begin(); it != result_pair.end(); ++it){
       buf.push_back(KTrade(*it));
-      
-   output.swap(buf);
-   return last;
-}
+    }
+    
+    output.swap(buf);
+    return last;
+  }
 
-//------------------------------------------------------------------------------
-// helper function to initialize Kraken API library's resources:
-void initialize() 
-{
-   CURLcode code = curl_global_init(CURL_GLOBAL_ALL);
-   if (code != CURLE_OK) {
+
+  //------------------------------------------------------------------------------
+  // update the server time, and the local and UTC time at the moment of the call
+  std::string KClient::update_server_time(){
+    KInput in;
+    // dealing with time structures
+    std::time_t NOW = std::time(NULL);
+    local_time = std::mktime(std::localtime(&NOW));
+    utc_time = std::mktime(std::gmtime(&NOW));
+
+    // getting time from server
+    json_string resp = libjson::to_json_string(public_method("Time",in));
+    JSONNode root = libjson::parse(resp);
+    
+    if(!root.at("error").empty()){
+      throw std::runtime_error("Kraken response doesn't contain result data.");
+    }
+
+    JSONNode &result = root["result"];
+    JSONNode &timestamp = result["unixtime"];
+
+    server_time = (std::time_t)(timestamp.as_int());
+
+    // for debug...
+    /*std::cout << "Server UTC time: " << server_utc_time << std::endl;
+    std::cout << "local time: " << local_time << std::endl;
+    std::cout << "UTC time: " << utc_time << std::endl;*/
+
+    return std::to_string((long)server_time);
+  }
+
+  //------------------------------------------------------------------------------
+  // update the assets list
+  std::string KClient::update_assets(KAssetsMap &kam)
+  {
+    KInput in;
+    json_string resp = libjson::to_json_string(public_method("Assets",in));
+    JSONNode root = libjson::parse(resp);
+
+    if(!root.at("error").empty()){
+      throw std::runtime_error("Kraken response doesn't contain assets data.");
+    }
+
+    JSONNode &result = root["result"];
+
+    kam.clear();
+    
+    for(const JSONNode &node : result){
+      kam.emplace(std::make_pair<std::string,KAsset>(libjson::to_std_string(node.name()),KAsset(node)));  
+    }
+    
+    return libjson::to_std_string(resp);
+  }
+  
+  //------------------------------------------------------------------------------
+  // print assets on cout fordebugin pourposes
+  void KClient::print_assets(const KAssetsMap &kam)
+  {
+    for(std::map<std::string,KAsset>::const_iterator it=kam.begin(); it!=kam.end(); ++it){
+      //std::cout << it->first << std::endl;
+      std::cout << it->second << std::endl;
+    }
+  }
+
+  //------------------------------------------------------------------------------
+  // get spreaddata for a pair
+  std::string KClient::spread(const std::string &pair, const std::string &since, KSpreadStorage &output){
+    KInput in;
+    in["pair"] = pair;
+    in["since"] = since;
+    json_string resp = libjson::to_json_string(public_method("Spread",in));
+    JSONNode root = libjson::parse(resp);
+
+    if(!root.at("error").empty()){
+      throw std::runtime_error("Kraken response doesn't contain assets data.");
+    }
+    JSONNode result = root["result"];
+    JSONNode pairnode = result[0];
+
+    for(JSONNode::iterator it = pairnode.begin(); it!=pairnode.end(); ++it){
+      output.push_back(KSpread(*it));
+    }
+    return libjson::to_std_string(result["last"].as_string());
+  }
+
+  std::string KClient::OHLC(const std::string &pair, const std::string &since,
+			    const std::string &interval, std::vector<KOHLC> &ohlcs){
+    KInput in;
+    in["pair"] = pair;
+    in["since"] = since;
+    in["interval"] = interval;
+    json_string data = libjson::to_json_string(public_method("OHLC",in));
+    JSONNode root = libjson::parse(data);
+
+    if(!root.at("error").empty()){
+      throw std::runtime_error("Kraken response to public call OHLC don't contain data");
+    }
+
+    JSONNode result = root["result"];
+    JSONNode ohlcnode = result[0];
+    
+    for(const JSONNode &node : ohlcnode){
+      ohlcs.push_back(KOHLC(node));
+    }
+    
+    std::string last = libjson::to_std_string(result.at("last").as_string());
+    
+    return last;
+  }
+  
+  //------------------------------------------------------------------------------
+  // helper function to initialize Kraken API library's resources:
+  void initialize() 
+  {
+    CURLcode code = curl_global_init(CURL_GLOBAL_ALL);
+    if (code != CURLE_OK) {
       std::ostringstream oss;
       oss << "curl_global_init() failed: " << curl_easy_strerror(code);
       throw std::runtime_error(oss.str());
-   }
-}
-
-//------------------------------------------------------------------------------
-// helper function to terminate Kraken API library's resources:
-void terminate() 
-{
-   curl_global_cleanup();
-}
-
-//------------------------------------------------------------------------------
-
+    }
+  }
+  
+  //------------------------------------------------------------------------------
+  // helper function to terminate Kraken API library's resources:
+  void terminate() 
+  {
+    curl_global_cleanup();
+  }
+  
+  //------------------------------------------------------------------------------
+  
 }; //namespace Kraken
 
 //------------------------------------------------------------------------------
