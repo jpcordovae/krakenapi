@@ -32,7 +32,7 @@
 #include "libjson/libjson.h"
 
 using namespace std;
-using namespace Kraken;
+using namespace kraken;
 
 //------------------------------------------------------------------------------
 // helper types to map time to a group of trades:
@@ -167,7 +167,7 @@ int main(int argc, char* argv[])
       };
 
       // initialize kraken lib's resources:
-      Kraken::initialize();
+      kraken::initialize();
 
       KClient kc;
 
