@@ -55,7 +55,7 @@ namespace kraken {
 			  const std::string &since,
 			  KOrderBook &kob);
     
-    std::string update_server_time();
+    std::string server_time(std::time_t &time);
     
     std::string update_assets(KAssetsMap &kam);
     
@@ -94,12 +94,7 @@ namespace kraken {
     // disallow copying
     KClient(const KClient&);
     KClient& operator=(const KClient&);
-    
-    //server time and difference from now()
-    std::time_t local_time;  // local time at update_server_time() moment
-    std::time_t utc_time;    // UTC timeat update_server_time() moment
-    std::time_t server_time; // server time
-    
+       
   };
   
   //------------------------------------------------------------------------------

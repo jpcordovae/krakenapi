@@ -318,7 +318,7 @@ std::string KClient::orderbook(const std::string &pair,
 
   json_string data = libjson::to_json_string(public_method("Depth",ki));
   JSONNode root = libjson::parse(data);
-  cout << data << endl;
+  //cout << data << endl;
   // throw exception on error in JSON response
   if(!root["error"].empty()){
     std::ostringstream oss;
@@ -337,23 +337,17 @@ std::string KClient::orderbook(const std::string &pair,
   JSONNode &result = root["result"];
   
   for(JSONNode::iterator it=result.begin(); it!=result.end(); ++it){
-    //std::ostringstream oss;
     kb.pair = libjson::to_std_string(it->name());
     for(JSONNode::iterator it2=it->begin(); it2 != it->end(); ++(it2)){
-      //oss << it2->name();
-      //oss << std::endl;
       for(JSONNode::iterator it3=it2->begin(); it3 != it2->end(); ++(it3)){
-	//oss << (*it3)[0].as_float() << " ; " << (*it3)[1].as_float() << " ; " << (*it3)[2].as_int() << std::endl;
 	if(std::string("asks").compare(it2->name())==0){
-	  kb.lAsks.push_back(KOrder());
+	  kb.lAsks.push_back(KOrder(*(it3)));
 	}
 	if(std::string("bids").compare(it2->name())==0){
-	  
+	  kb.lBids.push_back(KOrder(*(it3)));
 	}
       }
     }
-    //oss << std::endl;
-    //std::cout << oss.str();
   }
 
   return libjson::to_std_string(data); // pair name from server
@@ -405,16 +399,10 @@ std::string KClient::orderbook(const std::string &pair,
     return last;
   }
 
-
   //------------------------------------------------------------------------------
   // update the server time, and the local and UTC time at the moment of the call
-  std::string KClient::update_server_time(){
+  std::string KClient::server_time(std::time_t &stime){
     KInput in;
-    // dealing with time structures
-    std::time_t NOW = std::time(NULL);
-    local_time = std::mktime(std::localtime(&NOW));
-    utc_time = std::mktime(std::gmtime(&NOW));
-
     // getting time from server
     json_string resp = libjson::to_json_string(public_method("Time",in));
     JSONNode root = libjson::parse(resp);
@@ -426,14 +414,14 @@ std::string KClient::orderbook(const std::string &pair,
     JSONNode &result = root["result"];
     JSONNode &timestamp = result["unixtime"];
 
-    server_time = (std::time_t)(timestamp.as_int());
+    stime = (std::time_t)(timestamp.as_int());
 
     // for debug...
     /*std::cout << "Server UTC time: " << server_utc_time << std::endl;
     std::cout << "local time: " << local_time << std::endl;
     std::cout << "UTC time: " << utc_time << std::endl;*/
 
-    return std::to_string((long)server_time);
+    return std::to_string(stime);
   }
 
   //------------------------------------------------------------------------------

@@ -8,29 +8,32 @@
 
 namespace kraken{
 
-  struct korderbook{
+  struct KOrderBook{
     
     std::string pair;
-    std::list<korder> lBids;
-    std::list<korder> lAsks;
+    std::list<KOrder> lBids;
+    std::list<KOrder> lAsks;
 
-    double price;
-    double volume;
-    time_t time;
     std::string misc;
 
     //default constructor
-    korderbook(): price(0), volume(0), time(0){}
+    KOrderBook(){}
 
     // from pair JSONNode
-    korderbook(JSONNode node){
-
+    KOrderBook(JSONNode node){
       if(node.empty()) return;
-      
-      pair = libjson::as_std_string(node[0].as_string());
-
+      std::string sTmp;
+      for(JSONNode::iterator it=node.begin();it != node.end(); ++it){
+	sTmp = libjson::to_std_string(it->name());
+	if(sTmp.compare("lAsks")==0){
+	  
+	}else
+	  if(sTmp.compare("lBids")==0){
+	    
+	  }
+      }
+      //pair = libjson::as_std_string(node[0].as_string());
     }
-
     
   };
 

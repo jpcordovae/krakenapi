@@ -3,7 +3,7 @@
 
 //------------------------------------------------------------------------------
 
-namespace Kraken { 
+namespace kraken { 
 
 //------------------------------------------------------------------------------
 // construct from a JSONNode:
@@ -20,7 +20,7 @@ KTrade::KTrade(JSONNode node)
    
    misc = libjson::to_std_string(node[5].as_string()); 
 }
-
+  
 //------------------------------------------------------------------------------
 // prints out a KTrade:
 std::ostream& operator<<(std::ostream& os, const KTrade& kt)

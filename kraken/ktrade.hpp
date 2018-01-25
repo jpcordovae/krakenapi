@@ -3,11 +3,12 @@
 
 #include <string>
 #include <sstream>
+#include <vector>
 #include "../libjson/libjson.h"
 
 //------------------------------------------------------------------------------
 
-namespace Kraken { 
+namespace kraken { 
 
 //------------------------------------------------------------------------------
 // deals with recent trade data:
@@ -31,6 +32,8 @@ struct KTrade {
    KTrade(JSONNode node);
 };
 
+  typedef std::vector<KTrade> KTradeStorage;
+  
 //------------------------------------------------------------------------------
 // helper function to print a KTrade
 std::ostream& operator<<(std::ostream& os, const KTrade& kt);

@@ -87,3 +87,11 @@ set_target_properties (krt PROPERTIES
 		      COMPILE_DEFINITIONS_DEBUG "JSON_DEBUG;JSON_SAFE;JSON_ISO_STRICT")
 target_link_libraries (krt ${LIBS})
 
+
+add_executable (ktradebook main.cpp kraken/kassets.cpp)
+set_target_properties(	ktradebook PROPERTIES 
+			COMPILE_DEFINITIONS_DEBUG "JSON_DEBUG;JSON_SAFE;JSON_ISO_STRICT")
+target_link_libraries(ktradebook ${LIBS})
+
+
+

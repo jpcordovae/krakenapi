@@ -6,7 +6,7 @@
 
 namespace kraken{
 
-  struct korder{
+  struct KOrder{
 
     enum Order_t { BUY='b', SELL='s' };
     
@@ -17,10 +17,12 @@ namespace kraken{
     Order_t otype;
     std::string misc;
     
-    korder():price(0),volume(0),time(0){}
+    KOrder():price(0),volume(0),time(0){}
 
-    korder(JSONNode node){
-
+    KOrder(JSONNode node){
+      price = node[0].as_float();
+      volume = node[1].as_float();
+      time = node[2].as_int();
     }
     
   };
