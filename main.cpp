@@ -17,20 +17,19 @@ int main()
    try {
      KInput in;
      KClient client;
-     //KClient client( "psfPdijFav1ueTKaIIE1eQ307Sf3RDwfjDiT19BwGJz7n0rU8ZAyZADU","NCbhpXG7QWWtQivHI3f4p04jSE6Df+x89aLFTzOFFHIsuGjERbA4mDFuhaYnF+zLxFFEYL7SvQPb/C9gz9/MdA==");
      
      //**************************************************
      cout << endl;
      cout << "ORDERBOOK" << endl;
      KOrderBook kob;
      cout << client.orderbook("ETHUSD","0",kob) << endl;
-
+     
      //**************************************************
      cout << endl;
      cout << "TRADES" << endl;
      std::vector<KTrade> ktrades;
      cout << client.trades("ETHUSD","0",ktrades) << endl;
-
+     
      //*************************************************
      cout << endl;
      cout << "SPREAD" << endl;
@@ -52,7 +51,8 @@ int main()
      //************************************************
      cout << endl;
      cout << "SERVER TIME" << endl;
-     cout << client.update_server_time() << endl;
+     std::time_t stime;
+     cout << client.server_time(stime) << endl;
      
    }
    catch(exception& e) {
