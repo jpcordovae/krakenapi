@@ -1,8 +1,0 @@
-#ifndef KPLOT_HPP_
-#define KPLOT_HPP_
-
-#include "gnuplot.h"
-
-
-
-#endif
