@@ -1,0 +1,17 @@
+#include "kspread.hpp"
+
+namespace kraken {
+
+std::ostream& operator<<(std::ostream &os, const kSpread &ks)
+{
+  return os << as_string(time)
+	    << " , " << bid
+	    << " , " << ask;
+}
+  
+std::ostream& operator<<(std::ostream &os, const kSpreadStorage &kss)
+{
+  
+}
+
+};

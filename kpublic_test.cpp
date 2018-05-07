@@ -1,8 +1,8 @@
 #include <iostream>
 #include <stdexcept>
 #include <chrono>
+#include <ctime>
 
-//#include "kapi.hpp"
 #include "kraken/kclient.hpp"
 
 using namespace std;
@@ -23,7 +23,7 @@ int main()
      cout << endl;
      cout << "ORDERBOOK" << endl;
      KOrderBook kob;
-     cout << client.orderbook("ETHUSD","0",kob) << endl;
+     cout << client.orderbook("ETHUSD",kob) << endl;
      
      //**************************************************
      cout << endl;
@@ -44,17 +44,23 @@ int main()
      cout << client.update_assets(kam) << endl;
 
      //************************************************
-     cout << endl;
-     cout << "OHLC" << endl;
-     KOHLCStorage kohlcs;
-     cout << client.OHLC("ETHUSD","0","1",kohlcs) << endl;
+     //cout << endl;
+     //cout << "OHLC" << endl;
+     //KOHLCStorage kohlcs;
+     //cout << client.OHLC("ETHUSD","0","1",kohlcs) << endl;
 
      //************************************************
      cout << endl;
      cout << "SERVER TIME" << endl;
      std::time_t stime;
      cout << client.server_time(stime) << endl;
-     
+
+     //************************************************
+     cout << endl;
+     cout << "ASSET PAIRS" << endl;
+     KAssetPairs kaps;
+     client.asset_pairs(kaps);
+     cout << kaps << endl;
    }
    catch(exception& e) {
       cerr << "Error: " << e.what() << endl;

@@ -4,7 +4,10 @@
 #include <ctime>
 #include <thread>
 #include <mutex>
+#include <tuple>
+#include <algorithm>
 
+#include "kraken/kplot.hpp"
 #include "kraken/kclient.hpp"
 
 using namespace std;
@@ -18,35 +21,107 @@ typedef struct client_data{
 
 client_data CD;
 mutex mtxCD;
+KAssetsMap kam;
 
-void update_1_min( string _asset )
+void update_5_sec( string _asset )
 {
-  time_t last_timestamp = 0;
   KOrderBook kob;
-  try{
-    while(1){
-      #ifdef KAPI_DEBUG_
-      cout << _asset << " ORDERBOOK updated at " << last_timestamp << endl;
-      #endif
+  try
+  {
+    while(1)
+    {
+      clear_korderbook(kob);
+      
+      //BEGIN Critical Section
       mtxCD.lock();
-      CD.client.orderbook(_asset,to_string(last_timestamp),kob);
+      CD.client.orderbook(_asset,kob);
       mtxCD.unlock();
-      this_thread::sleep_for(chrono::milliseconds(60*1000));// 60seconds
+      //END   Critical Section
+      
+      std::vector<double> prices_asks  = get_prices(kob.lAsks);
+      std::vector<double> volumes_asks = get_volumes(kob.lAsks);
+      std::vector<double> prices_bids  = get_prices(kob.lBids);
+      std::vector<double> volumes_bids = get_volumes(kob.lBids);
+
+      double mmin = *(min_element(prices_bids.begin(),prices_bids.end()));
+      double mmax = *(max_element(prices_asks.begin(),prices_asks.end()));
+      //gp << "set yrange [0:1500]\n";
+      gp << "set xrange [" << mmin << ":" << mmax << "]\n";
+      gp << "set grid ytics lt 0 lw 1\n";
+      gp << "set grid xtics lt 0 lw 1\n";
+      gp << "plot '-' with points title 'asks', '-' with points title 'bids'\n";
+      gp.send1d(make_tuple(prices_asks,volumes_asks));
+      gp.send1d(make_tuple(prices_bids,volumes_bids));
+      
+      //gp.send1d(make_tuple(prices_asks,volumes_asks,prices_bids,volumes_bids));
+      this_thread::sleep_for(chrono::milliseconds( 2500));// 60 seconds
     }
-  }
-  catch(exception& e) {
+  } catch( exception& e )
+  {
     cerr << "Error: " << e.what() << endl;
-  }
-  catch(...) {
+  } catch(...)
+  {
     cerr << "Unknow exception." << endl;
   }
 }
 
+void spread_thread()
+{
+  string last_timestamp = "0";
+  KSpreadStorage kss;
+  try
+  {
+    while(1)
+    {
+      //BEGIN Critical Section
+      mtxCD.lock();
+      last_timestamp = CD.client.spread("ETH",last_timestamp,kss);
+      
+      mtxCD.unlock();
+      //END   Critical Section
+      for_each(kss.begin(),kss.end(),[&](const KSpread &ks){cout << to_string(ks.time)
+								 << " , " << ks.bid
+								 << " , " << ks.ask << endl;});
+ 
+      //gp << "set yrange [0:1500]\n";
+      //gp << "set xrange [750:850]\n";
+      //gp << "plot '-' with points title 'asks', '-' with points title 'bids'\n";
+      //gp.send1d(make_tuple(prices_asks,volumes_asks));
+      //gp.send1d(make_tuple(prices_bids,volumes_bids));
+      
+      //gp.send1d(make_tuple(prices_asks,volumes_asks,prices_bids,volumes_bids));
+      this_thread::sleep_for(chrono::milliseconds( 2500));// 60 seconds
+    }
+  } catch( exception& e )
+  {
+    cerr << "Error: " << e.what() << endl;
+  } catch(...)
+  {
+    cerr << "Unknow exception." << endl;
+  }
+
+}
+
 int main(int argc, char **argv) 
-{ 
+{
+  
    curl_global_init(CURL_GLOBAL_ALL);
-   cout << "starting 1 min thread..." << endl;
-   thread one_min_thread(update_1_min,"ETHUSD");
+   
+   cout << "getting assets..." << endl;
+   
+   string last_timestamp_spread;
+
+   //BEGIN Critical Section
+   mtxCD.lock();
+   CD.client.update_assets(kam);
+   mtxCD.unlock();
+   //END Critical Section
+   CD.client.print_assets(kam);
+   
+   //cout << kss << endl;
+   cout << "starting 5 secs thread..." << endl;
+   
+   thread one_min_thread(update_5_sec,"ETHUSD");
    
    try {  
      //**************************************************
