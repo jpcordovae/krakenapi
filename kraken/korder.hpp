@@ -2,6 +2,9 @@
 #define KORDER_H_
 
 #include <string>
+#include <iostream>
+#include <vector>
+
 #include "../libjson/libjson.h"
 
 namespace kraken{
@@ -27,6 +30,14 @@ namespace kraken{
     
   };
 
+  std::ostream& operator<<(std::ostream &os,const KOrder &ko);
+  
+  typedef std::vector<KOrder> KOrders;
+  
+  std::vector<double> get_prices(KOrders &kos);
+  std::vector<double> get_volumes(KOrders &kos);
+  std::vector<time_t> get_times(KOrders &kos);
+  
 };
 
 #endif // KORDER_H_

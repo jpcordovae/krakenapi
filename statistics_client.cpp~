@@ -1,0 +1,23 @@
+#include <iostream>
+#include <stdexcept>
+#include <chrono>
+#include <argp.h>
+
+#include "kraken/kclient.hpp"
+
+using namespace std;
+using namespace kraken;
+
+static char doc[] = "statistic extractor fom kraken trading cryptocurrency trader."
+
+static struct arg_option options[] = {
+  {"verbose",'v',0,     0,"verbose output"},
+  {"quiet"  ,'q',0,     0,"Don't produce any output"},
+  {"output" ,'o',"FILE",0,"output to FILE instead to standard output, default formas is CSV."}
+  {0}
+};
+  
+int main(int argc, char **argv)
+{
+
+}

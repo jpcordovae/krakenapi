@@ -1,0 +1,1 @@
+/usr/bin/c++  -g  -rdynamic CMakeFiles/kpublic_test.dir/kpublic_test.cpp.o  -o kpublic_test libkapid.a -lssl -lcrypto -lcurl libjsond.a 

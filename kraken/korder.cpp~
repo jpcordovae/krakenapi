@@ -1,0 +1,10 @@
+#include "korder.hpp"
+
+namespace kraken {
+
+std::ostream& operator<<(std::ostream &os,const KOrder &ko)
+{
+  return os << "P: " << std::to_string(ko.price) << " , V: " << std::to_string(ko.volume) << " , t: " << std::to_string(ko.time);
+}
+
+};

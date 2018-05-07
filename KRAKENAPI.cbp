@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="KRAKENAPI"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/jpce/Projects/krakenapi"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/jpce/Projects/krakenapi"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="kapi">
+				<Option output="/home/jpce/Projects/krakenapi/libkapid.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/jpce/Projects/krakenapi"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DJSON_DEBUG"/>
+					<Add option="-DJSON_SAFE"/>
+					<Add option="-DJSON_ISO_STRICT"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 kapi"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="kapi/fast">
+				<Option output="/home/jpce/Projects/krakenapi/libkapid.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/jpce/Projects/krakenapi"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DJSON_DEBUG"/>
+					<Add option="-DJSON_SAFE"/>
+					<Add option="-DJSON_ISO_STRICT"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 kapi/fast"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="kph">
+				<Option output="/home/jpce/Projects/krakenapi/kph" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/jpce/Projects/krakenapi"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DJSON_DEBUG"/>
+					<Add option="-DJSON_SAFE"/>
+					<Add option="-DJSON_ISO_STRICT"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 kph"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="kph/fast">
+				<Option output="/home/jpce/Projects/krakenapi/kph" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/jpce/Projects/krakenapi"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DJSON_DEBUG"/>
+					<Add option="-DJSON_SAFE"/>
+					<Add option="-DJSON_ISO_STRICT"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 kph/fast"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/jpce/Projects/krakenapi"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="kpublic_test">
+				<Option output="/home/jpce/Projects/krakenapi/kpublic_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/jpce/Projects/krakenapi"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DJSON_DEBUG"/>
+					<Add option="-DJSON_SAFE"/>
+					<Add option="-DJSON_ISO_STRICT"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 kpublic_test"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="kpublic_test/fast">
+				<Option output="/home/jpce/Projects/krakenapi/kpublic_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/jpce/Projects/krakenapi"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DJSON_DEBUG"/>
+					<Add option="-DJSON_SAFE"/>
+					<Add option="-DJSON_ISO_STRICT"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 kpublic_test/fast"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="libjson">
+				<Option output="/home/jpce/Projects/krakenapi/libjsond.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/jpce/Projects/krakenapi"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DJSON_DEBUG"/>
+					<Add option="-DJSON_SAFE"/>
+					<Add option="-DJSON_ISO_STRICT"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 libjson"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="libjson/fast">
+				<Option output="/home/jpce/Projects/krakenapi/libjsond.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/jpce/Projects/krakenapi"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DJSON_DEBUG"/>
+					<Add option="-DJSON_SAFE"/>
+					<Add option="-DJSON_ISO_STRICT"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 libjson/fast"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="krt">
+				<Option output="/home/jpce/Projects/krakenapi/krt" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/jpce/Projects/krakenapi"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DJSON_DEBUG"/>
+					<Add option="-DJSON_SAFE"/>
+					<Add option="-DJSON_ISO_STRICT"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 krt"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="krt/fast">
+				<Option output="/home/jpce/Projects/krakenapi/krt" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/jpce/Projects/krakenapi"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DJSON_DEBUG"/>
+					<Add option="-DJSON_SAFE"/>
+					<Add option="-DJSON_ISO_STRICT"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 krt/fast"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/home/jpce/Projects/krakenapi/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/jpce/Projects/krakenapi/kph.cpp">
+			<Option target="kph"/>
+		</Unit>
+		<Unit filename="/home/jpce/Projects/krakenapi/kpublic_test.cpp">
+			<Option target="kpublic_test"/>
+		</Unit>
+		<Unit filename="/home/jpce/Projects/krakenapi/kraken/kassets.cpp">
+			<Option target="kapi"/>
+			<Option target="kpublic_test"/>
+		</Unit>
+		<Unit filename="/home/jpce/Projects/krakenapi/kraken/kassets.hpp">
+			<Option target="kapi"/>
+			<Option target="kpublic_test"/>
+		</Unit>
+		<Unit filename="/home/jpce/Projects/krakenapi/kraken/kclient.cpp">
+			<Option target="kapi"/>
+		</Unit>
+		<Unit filename="/home/jpce/Projects/krakenapi/kraken/kclient.hpp">
+			<Option target="kapi"/>
+		</Unit>
+		<Unit filename="/home/jpce/Projects/krakenapi/kraken/ktrade.cpp">
+			<Option target="kapi"/>
+		</Unit>
+		<Unit filename="/home/jpce/Projects/krakenapi/kraken/ktrade.hpp">
+			<Option target="kapi"/>
+		</Unit>
+		<Unit filename="/home/jpce/Projects/krakenapi/krt.cpp">
+			<Option target="krt"/>
+		</Unit>
+		<Unit filename="/home/jpce/Projects/krakenapi/libjson/_internal/Source/JSONAllocator.cpp">
+			<Option target="libjson"/>
+		</Unit>
+		<Unit filename="/home/jpce/Projects/krakenapi/libjson/_internal/Source/JSONAllocator.h">
+			<Option target="libjson"/>
+		</Unit>
+		<Unit filename="/home/jpce/Projects/krakenapi/libjson/_internal/Source/JSONChildren.cpp">
+			<Option target="libjson"/>
+		</Unit>
+		<Unit filename="/home/jpce/Projects/krakenapi/libjson/_internal/Source/JSONChildren.h">
+			<Option target="libjson"/>
+		</Unit>
+		<Unit filename="/home/jpce/Projects/krakenapi/libjson/_internal/Source/JSONDebug.cpp">
+			<Option target="libjson"/>
+		</Unit>
+		<Unit filename="/home/jpce/Projects/krakenapi/libjson/_internal/Source/JSONDebug.h">
+			<Option target="libjson"/>
+		</Unit>
+		<Unit filename="/home/jpce/Projects/krakenapi/libjson/_internal/Source/JSONIterators.cpp">
+			<Option target="libjson"/>
+		</Unit>
+		<Unit filename="/home/jpce/Projects/krakenapi/libjson/_internal/Source/JSONMemory.cpp">
+			<Option target="libjson"/>
+		</Unit>
+		<Unit filename="/home/jpce/Projects/krakenapi/libjson/_internal/Source/JSONMemory.h">
+			<Option target="libjson"/>
+		</Unit>
+		<Unit filename="/home/jpce/Projects/krakenapi/libjson/_internal/Source/JSONNode.cpp">
+			<Option target="libjson"/>
+		</Unit>
+		<Unit filename="/home/jpce/Projects/krakenapi/libjson/_internal/Source/JSONNode.h">
+			<Option target="libjson"/>
+		</Unit>
+		<Unit filename="/home/jpce/Projects/krakenapi/libjson/_internal/Source/JSONNode_Mutex.cpp">
+			<Option target="libjson"/>
+		</Unit>
+		<Unit filename="/home/jpce/Projects/krakenapi/libjson/_internal/Source/JSONPreparse.cpp">
+			<Option target="libjson"/>
+		</Unit>
+		<Unit filename="/home/jpce/Projects/krakenapi/libjson/_internal/Source/JSONPreparse.h">
+			<Option target="libjson"/>
+		</Unit>
+		<Unit filename="/home/jpce/Projects/krakenapi/libjson/_internal/Source/JSONStream.cpp">
+			<Option target="libjson"/>
+		</Unit>
+		<Unit filename="/home/jpce/Projects/krakenapi/libjson/_internal/Source/JSONStream.h">
+			<Option target="libjson"/>
+		</Unit>
+		<Unit filename="/home/jpce/Projects/krakenapi/libjson/_internal/Source/JSONValidator.cpp">
+			<Option target="libjson"/>
+		</Unit>
+		<Unit filename="/home/jpce/Projects/krakenapi/libjson/_internal/Source/JSONValidator.h">
+			<Option target="libjson"/>
+		</Unit>
+		<Unit filename="/home/jpce/Projects/krakenapi/libjson/_internal/Source/JSONWorker.cpp">
+			<Option target="libjson"/>
+		</Unit>
+		<Unit filename="/home/jpce/Projects/krakenapi/libjson/_internal/Source/JSONWorker.h">
+			<Option target="libjson"/>
+		</Unit>
+		<Unit filename="/home/jpce/Projects/krakenapi/libjson/_internal/Source/JSONWriter.cpp">
+			<Option target="libjson"/>
+		</Unit>
+		<Unit filename="/home/jpce/Projects/krakenapi/libjson/_internal/Source/internalJSONNode.cpp">
+			<Option target="libjson"/>
+		</Unit>
+		<Unit filename="/home/jpce/Projects/krakenapi/libjson/_internal/Source/internalJSONNode.h">
+			<Option target="libjson"/>
+		</Unit>
+		<Unit filename="/home/jpce/Projects/krakenapi/libjson/_internal/Source/libjson.cpp">
+			<Option target="libjson"/>
+		</Unit>
+		<Unit filename="/home/jpce/Projects/krakenapi/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
