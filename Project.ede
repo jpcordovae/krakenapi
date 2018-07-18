@@ -1,0 +1,13 @@
+;; Object KrakenAPI
+;; EDE Project Files are auto generated: Do Not Edit
+(ede-proj-project "KrakenAPI"
+  :file "Project.ede"
+  :name "KrakenAPI"
+  :targets
+  (list
+    (ede-proj-target-makefile-program "public_test"
+      :name "public_test"
+      :path ""
+      :source '("main.cpp")
+      :configuration-variables nil
+      :ldlibs '("curl"))))
