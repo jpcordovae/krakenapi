@@ -1,0 +1,8 @@
+/home/jpce/Projects/krakenapi/CMakeFiles/rebuild_cache.dir
+/home/jpce/Projects/krakenapi/CMakeFiles/krt.dir
+/home/jpce/Projects/krakenapi/CMakeFiles/edit_cache.dir
+/home/jpce/Projects/krakenapi/CMakeFiles/kapi.dir
+/home/jpce/Projects/krakenapi/CMakeFiles/kpublic_test.dir
+/home/jpce/Projects/krakenapi/CMakeFiles/libjson.dir
+/home/jpce/Projects/krakenapi/CMakeFiles/kph.dir
+/home/jpce/Projects/krakenapi/CMakeFiles/kstatistics.dir

@@ -1,0 +1,1 @@
+/usr/bin/c++  -g  -rdynamic CMakeFiles/kstatistics.dir/kstatistics.cpp.o  -o kstatistics libkapid.a -lssl -lcrypto -lcurl libjsond.a -lpthread -lboost_iostreams -lboost_system -lboost_filesystem 
