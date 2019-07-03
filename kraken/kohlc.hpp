@@ -3,11 +3,17 @@
 
 #include <iostream>
 #include <vector>
+#include <time.h>
+#include <algorithm>
+#include <string>
+#include "../libjson/libjson.h"
+
+using namespace std;
 
 namespace kraken{
 
   struct KOHLC{
-    std::time_t time;
+    time_t ktime;
     float open;
     float high;
     float low;
@@ -16,8 +22,8 @@ namespace kraken{
     float volume;
     float count;
     
-    KOHLC(const JSONNode &node){
-      time = node[0].as_int();
+    KOHLC(const JSONNode &node) {
+      ktime = (time_t)(node[0].as_int());
       open = node[1].as_float();
       high = node[2].as_float();
       low  = node[3].as_float();
@@ -27,19 +33,12 @@ namespace kraken{
       count = node[7].as_float();
     }
   };
-
+  
   typedef std::vector<KOHLC> KOHLCStorage;
+  
+  std::ostream& operator<<(std::ostream &os, const KOHLC &kohlc);
 
-  /*std::ostream &operator<<(std::ostream &os,const KOHLC &kohlc){
-    return os << kohlc.time << " ; "
-	      << kohlc.open << " ; "
-	      << kohlc.close << " ; "
-	      << kohlc.high << " ; "
-	      << kohlc.low << " ; "
-	      << kohlc.vwap << " ; "
-	      << kohlc.volume << " ; "
-	      << kohlc.count;
-	      }*/
+  std::ostream& operator<<(std::ostream &os, const KOHLCStorage &KS);
   
 };
 
