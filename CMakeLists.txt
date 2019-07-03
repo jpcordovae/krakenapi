@@ -96,7 +96,7 @@ target_link_libraries (krt ${LIBS})
 #------------------------------------------------------------------------------
 #Add the executable 'kpublic_tesst'
 #------------------------------------------------------------------------------
-add_executable (kpublic_test kpublic_test.cpp)
+add_executable (kpublic_test kpublic_test.cpp kraken/kohlc.cpp)
 set_target_properties(	kpublic_test PROPERTIES 
 			COMPILE_DEFINITIONS_DEBUG "JSON_DEBUG;JSON_SAFE;JSON_ISO_STRICT")
 target_link_libraries(kpublic_test ${LIBS})
@@ -104,7 +104,7 @@ target_link_libraries(kpublic_test ${LIBS})
 #------------------------------------------------------------------------------
 #Add the executable 'kstatistics'
 #------------------------------------------------------------------------------
-add_executable(kstatistics kstatistics.cpp)
+add_executable(kstatistics kstatistics.cpp kraken/kohlc.cpp)
 set_target_properties(	kstatistics PROPERTIES 
 			COMPILE_DEFINITIONS_DEBUG "JSON_DEBUG;JSON_SAFE;JSON_ISO_STRICT")
 target_link_libraries(kstatistics ${LIBS} ${CMAKE_THREAD_LIBS_INIT} boost_iostreams boost_system boost_filesystem)
