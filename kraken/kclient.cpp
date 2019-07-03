@@ -143,8 +143,8 @@ static std::string create_nonce()
 //------------------------------------------------------------------------------
 // constructor with all explicit parameters
 KClient::KClient(const std::string& key, const std::string& secret, 
-	   const std::string& url, const std::string& version)
-   :key_(key), secret_(secret), url_(url), version_(version) 
+		 const std::string& url, const std::string& version)
+  :key_(key), secret_(secret), url_(url), version_(version) 
 { 
    init(); 
 }
@@ -152,7 +152,7 @@ KClient::KClient(const std::string& key, const std::string& secret,
 //------------------------------------------------------------------------------
 // default API base URL and API version
 KClient::KClient(const std::string& key, const std::string& secret)
-   :key_(key), secret_(secret), url_("https://api.kraken.com"), version_("0") 
+  :key_(key), secret_(secret), url_("https://api.kraken.com"), version_("0") 
 { 
    init(); 
 }
@@ -507,7 +507,7 @@ std::string KClient::asset_pairs(KAssetPairs &kap)
   }
 
   std::string KClient::OHLC(const std::string &pair, const std::string &since,
-			    const std::string &interval, std::vector<KOHLC> &ohlcs){
+			    const std::string &interval, KOHLCStorage &ohlcs){
     KInput in;
     in["pair"] = pair;
     in["since"] = since;
@@ -516,6 +516,8 @@ std::string KClient::asset_pairs(KAssetPairs &kap)
     JSONNode root = libjson::parse(data);
 
     if(!root.at("error").empty()){
+      std::string error_string = libjson::to_std_string(root.at("error").as_string());
+      cout << error_string << endl;
       throw std::runtime_error("Kraken response to public call OHLC don't contain data");
     }
 
