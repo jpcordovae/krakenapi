@@ -9,6 +9,7 @@
 
 #include "kraken/kplot.hpp"
 #include "kraken/kclient.hpp"
+#include "kraken/kohlc.hpp"
 
 using namespace std;
 using namespace kraken;
@@ -76,20 +77,20 @@ void spread_thread()
       //BEGIN Critical Section
       mtxCD.lock();
       last_timestamp = CD.client.spread("ETH",last_timestamp,kss);
-      
       mtxCD.unlock();
       //END   Critical Section
+      
       for_each(kss.begin(),kss.end(),[&](const KSpread &ks){cout << to_string(ks.time)
 								 << " , " << ks.bid
 								 << " , " << ks.ask << endl;});
- 
+      
       //gp << "set yrange [0:1500]\n";
       //gp << "set xrange [750:850]\n";
       //gp << "plot '-' with points title 'asks', '-' with points title 'bids'\n";
       //gp.send1d(make_tuple(prices_asks,volumes_asks));
       //gp.send1d(make_tuple(prices_bids,volumes_bids));
-      
       //gp.send1d(make_tuple(prices_asks,volumes_asks,prices_bids,volumes_bids));
+      
       this_thread::sleep_for(chrono::milliseconds( 2500));// 60 seconds
     }
   } catch( exception& e )
@@ -104,11 +105,8 @@ void spread_thread()
 
 int main(int argc, char **argv) 
 {
-  
    curl_global_init(CURL_GLOBAL_ALL);
-   
    cout << "getting assets..." << endl;
-   
    string last_timestamp_spread;
 
    //BEGIN Critical Section
@@ -116,11 +114,10 @@ int main(int argc, char **argv)
    CD.client.update_assets(kam);
    mtxCD.unlock();
    //END Critical Section
+
    CD.client.print_assets(kam);
-   
    //cout << kss << endl;
    cout << "starting 5 secs thread..." << endl;
-   
    thread one_min_thread(update_5_sec,"ETHUSD");
    
    try {  
@@ -163,8 +160,10 @@ int main(int argc, char **argv)
    catch(...) {
       cerr << "Unknow exception." << endl;
    }
+   
    cin.get();
    curl_global_cleanup();
+   
    return 0;
 }
  

@@ -44,11 +44,11 @@ int main()
      cout << client.update_assets(kam) << endl;
 
      //************************************************
-     //cout << endl;
-     //cout << "OHLC" << endl;
-     //KOHLCStorage kohlcs;
-     //cout << client.OHLC("ETHUSD","0","1",kohlcs) << endl;
-
+     cout << endl;
+     cout << "OHLC" << endl;
+     KOHLCStorage kohlcs;
+     client.OHLC("ETHUSD","0","1",kohlcs);
+     cout << kohlcs << endl;
      //************************************************
      cout << endl;
      cout << "SERVER TIME" << endl;
