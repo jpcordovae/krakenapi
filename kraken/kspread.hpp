@@ -1,7 +1,11 @@
 #ifndef KSPREAD_HPP_
 #define KSPREAD_HPP_
 
-#include <chrono>
+#include <ostream>
+#include <vector>
+#include <string>
+#include "../libjson/libjson.h"
+#include <ctime>
 
 namespace kraken{
 
@@ -18,6 +22,9 @@ namespace kraken{
   };// struct KSpread
 
   typedef std::vector<KSpread> KSpreadStorage;
+
+  std::ostream& operator<<(std::ostream &os, const KSpread &ks);
+  //std::ostream& operator<<(std::ostream &os, const KSpreadStorage &kss);
   
 };// namespace kraken
 

@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <sstream>
 #include <cstring>
+#include <algorithm>
 #include <ctime>
 #include <cerrno>
 #include <map>
@@ -198,8 +199,8 @@ KClient::~KClient()
 //
 // and the result is converted in a base64 string: 
 std::string KClient::signature(const std::string& path, 
-			    const std::string& nonce, 
-			    const std::string& postdata) const
+			       const std::string& nonce, 
+			       const std::string& postdata) const
 {
    // add path to data to encrypt
    std::vector<unsigned char> data(path.begin(), path.end());
@@ -228,7 +229,7 @@ size_t KClient::write_cb(char* ptr, size_t size, size_t nmemb, void* userdata)
 //------------------------------------------------------------------------------
 // deals with public API methods:
 std::string KClient::public_method(const std::string& method, 
-				const KInput& input) const
+				   const KInput& input) const
 {
    // build method URL
    std::string path = "/" + version_ + "/public/" + method;
@@ -260,14 +261,14 @@ std::string KClient::public_method(const std::string& method,
 //------------------------------------------------------------------------------
 // deals with private API methods:
 std::string KClient::private_method(const std::string& method, 
-				 const KInput& input) const
+				    const KInput& input) const
 {   
    // build method URL
    std::string path = "/" + version_ + "/private/" + method;
    std::string method_url = url_ + path;
-
+   
    curl_easy_setopt(curl_, CURLOPT_URL, method_url.c_str());
-
+   
    // create a nonce and and postdata 
    std::string nonce = create_nonce();
    std::string postdata = "nonce=" + nonce;
@@ -275,6 +276,7 @@ std::string KClient::private_method(const std::string& method,
    // if 'input' is not empty generate other postdata
    if (!input.empty())
       postdata = postdata + "&" + build_query(input);
+   
    curl_easy_setopt(curl_, CURLOPT_POSTFIELDS, postdata.c_str());
 
    // add custom header
@@ -298,7 +300,8 @@ std::string KClient::private_method(const std::string& method,
    curl_slist_free_all(chunk);
   
    // check perform result
-   if (result != CURLE_OK) {
+   if (result != CURLE_OK)
+   {
       std::ostringstream oss;
       oss << "curl_easy_perform() failed: " << curl_easy_strerror(result);
       throw std::runtime_error(oss.str());
@@ -307,51 +310,54 @@ std::string KClient::private_method(const std::string& method,
    return response;
 }
 
-std::string KClient::orderbook(const std::string &pair,
-			       const std::string &since,
-			       KOrderBook &kb)
+std::string KClient::orderbook(const std::string &pair, KOrderBook &kb)
 {
   // url options
   KInput ki;
   ki["pair"] = pair;
-  ki["since"] = since;
 
   json_string data = libjson::to_json_string(public_method("Depth",ki));
   JSONNode root = libjson::parse(data);
-  //cout << data << endl;
+
   // throw exception on error in JSON response
-  if(!root["error"].empty()){
+  if(!root["error"].empty())
+  {
     std::ostringstream oss;
     oss << "Kraken response contains errors: ";
-    for(JSONNode::const_iterator it = root["error"].begin(); it != root["error"].end(); ++it){
+    for(JSONNode::const_iterator it = root["error"].begin(); it != root["error"].end(); ++it)
+    {
       oss << std::endl << " * " << libjson::to_std_string(it->as_string());
     }
     throw std::runtime_error(oss.str());
   }
   
   // throw exception on empty json result
-  if(root["result"].empty()){
+  if(root["result"].empty())
+  {
     throw std::runtime_error("Kraken response empty");
   }
 
   JSONNode &result = root["result"];
   
-  for(JSONNode::iterator it=result.begin(); it!=result.end(); ++it){
+  for(JSONNode::iterator it=result.begin(); it!=result.end(); ++it)
+  {
     kb.pair = libjson::to_std_string(it->name());
-    for(JSONNode::iterator it2=it->begin(); it2 != it->end(); ++(it2)){
-      for(JSONNode::iterator it3=it2->begin(); it3 != it2->end(); ++(it3)){
-	if(std::string("asks").compare(it2->name())==0){
+    for(JSONNode::iterator it2=it->begin(); it2 != it->end(); ++(it2))
+    {
+      for(JSONNode::iterator it3=it2->begin(); it3 != it2->end(); ++(it3))
+      {
+	if(std::string("asks").compare(it2->name())==0)
+	{
 	  kb.lAsks.push_back(KOrder(*(it3)));
 	}
-	if(std::string("bids").compare(it2->name())==0){
+	if(std::string("bids").compare(it2->name())==0)
+	{
 	  kb.lBids.push_back(KOrder(*(it3)));
 	}
       }
     }
   }
-
   return libjson::to_std_string(data); // pair name from server
-  
 }
   
 //------------------------------------------------------------------------------
@@ -381,7 +387,8 @@ std::string KClient::orderbook(const std::string &pair,
     }
     
     // throw an exception if result is empty   
-    if (root.at("result").empty()) {
+    if (root.at("result").empty())
+    {
       throw std::runtime_error("Kraken response doesn't contain result data");
     }
     
@@ -391,7 +398,8 @@ std::string KClient::orderbook(const std::string &pair,
     std::string last = libjson::to_std_string( result.at("last").as_string() );
     
     std::vector<KTrade> buf;
-    for (JSONNode::const_iterator it = result_pair.begin(); it != result_pair.end(); ++it){
+    for (JSONNode::const_iterator it = result_pair.begin(); it != result_pair.end(); ++it)
+    {
       buf.push_back(KTrade(*it));
     }
     
@@ -442,6 +450,26 @@ std::string KClient::orderbook(const std::string &pair,
     
     for(const JSONNode &node : result){
       kam.emplace(std::make_pair<std::string,KAsset>(libjson::to_std_string(node.name()),KAsset(node)));  
+    }
+    
+    return libjson::to_std_string(resp);
+  }
+
+std::string KClient::asset_pairs(KAssetPairs &kap)
+  {
+    KInput in;
+    json_string resp = libjson::to_json_string(public_method("AssetPairs",in));
+    JSONNode root = libjson::parse(resp);
+
+    if(!root.at("error").empty()){
+      throw std::runtime_error("Kraken response doesn't contain asset pais data");
+    }    
+
+    JSONNode &result = root["result"];
+    kap.clear();
+
+    for(const JSONNode &node : result){
+      kap.push_back(KAssetPair(node));
     }
     
     return libjson::to_std_string(resp);

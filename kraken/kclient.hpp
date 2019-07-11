@@ -52,7 +52,6 @@ namespace kraken {
 		       std::vector<KTrade>& output);
     
     std::string orderbook(const std::string &pair,
-			  const std::string &since,
 			  KOrderBook &kob);
     
     std::string server_time(std::time_t &time);
@@ -68,7 +67,9 @@ namespace kraken {
     
     std::string OHLC(const std::string &pair, const std::string &since,
 		     const std::string &interval, KOHLCStorage &ohlcs);
-    
+
+    std::string asset_pairs(KAssetPairs &kaps);
+
   private:
     // init CURL and other stuffs 
     void init();
