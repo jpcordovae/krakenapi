@@ -91,16 +91,16 @@ hmac_sha512(const std::vector<unsigned char>& data,
    unsigned int len = EVP_MAX_MD_SIZE;
    std::vector<unsigned char> digest(len);
 
-   HMAC_CTX *ctx;
-   //HMAC_CTX *ctx = HMAC_CTX_new();
-   HMAC_CTX_init(ctx);
+   //HMAC_CTX *ctx;
+   HMAC_CTX *ctx = HMAC_CTX_new();
+   //HMAC_CTX_init(ctx);
 
    HMAC_Init_ex(ctx, key.data(), key.size(), EVP_sha512(), NULL);
    HMAC_Update(ctx, data.data(), data.size());
    HMAC_Final(ctx, digest.data(), &len);
    
-   //HMAC_CTX_free(ctx);
-   HMAC_CTX_cleanup(ctx);
+   HMAC_CTX_free(ctx);
+   //HMAC_CTX_cleanup(ctx);
    
    return digest;
 }
@@ -518,7 +518,8 @@ std::string KClient::asset_pairs(KAssetPairs &kap)
     if(!root.at("error").empty()){
       std::string error_string = libjson::to_std_string(root.at("error").as_string());
       cout << error_string << endl;
-      throw std::runtime_error("Kraken response to public call OHLC don't contain data");
+      //throw std::runtime_error("Kraken response to public call OHLC don't contain data");
+      return since;
     }
 
     JSONNode result = root["result"];
