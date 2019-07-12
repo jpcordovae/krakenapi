@@ -1,1 +1,0 @@
-/usr/bin/c++  -g  -rdynamic CMakeFiles/kph.dir/kph.cpp.o  -o kph libkapid.a -lssl -lcrypto -lcurl libjsond.a 

@@ -1,1 +1,0 @@
-/usr/bin/c++  -g  -rdynamic CMakeFiles/krt.dir/krt.cpp.o  -o krt libkapid.a -lssl -lcrypto -lcurl libjsond.a 
