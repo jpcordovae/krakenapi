@@ -512,26 +512,31 @@ std::string KClient::asset_pairs(KAssetPairs &kap)
     in["pair"] = pair;
     in["since"] = since;
     in["interval"] = interval;
-    json_string data = libjson::to_json_string(public_method("OHLC",in));
-    JSONNode root = libjson::parse(data);
+    try{
+      json_string data = libjson::to_json_string(public_method("OHLC",in));
+      JSONNode root = libjson::parse(data);
 
-    if(!root.at("error").empty()){
-      std::string error_string = libjson::to_std_string(root.at("error").as_string());
-      cout << error_string << endl;
-      //throw std::runtime_error("Kraken response to public call OHLC don't contain data");
+      if(!root.at("error").empty()){
+	std::string error_string = libjson::to_std_string(root.at("error").as_string());
+	cout << error_string << endl;
+	//throw std::runtime_error("Kraken response to public call OHLC don't contain data");
+	return since;
+      }
+
+      JSONNode result = root["result"];
+      JSONNode ohlcnode = result[0];
+    
+      for(const JSONNode &node : ohlcnode){
+	ohlcs.push_back(KOHLC(node));
+      }
+      std::string last = libjson::to_std_string(result.at("last").as_string());
+      return last;
+    }
+    catch(std::exception &e){
+      std::cerr << "KCLIENT OHLC exception: " << e.what();
       return since;
     }
-
-    JSONNode result = root["result"];
-    JSONNode ohlcnode = result[0];
-    
-    for(const JSONNode &node : ohlcnode){
-      ohlcs.push_back(KOHLC(node));
-    }
-    
-    std::string last = libjson::to_std_string(result.at("last").as_string());
-    
-    return last;
+    return since; // juat for sake of avoid warnings
   }
   
   //------------------------------------------------------------------------------

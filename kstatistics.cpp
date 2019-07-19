@@ -40,9 +40,9 @@ void kohlcs_thread_function()
       last = CD.client.OHLC("ETHUSD",last.c_str(),"1",kohlcs);
       mtxCD.unlock(); 
       //END   Critical Section
-      if(kohlcs.size()>=10000) {
+      if(kohlcs.size()>=60) {
 	ofstream ffile(last,ios::out | ios::binary | ios_base::ate);
-	ffile.write((char*)kohlcs.data(),kohlcs.size());
+ 	ffile.write((char*)kohlcs.data(),kohlcs.size());
 	ffile.close();
 	//cout << kohlcs  << endl;
 	kohlcs.clear();
@@ -141,7 +141,7 @@ int main(int argc, char **argv)
   //CD.client.print_assets(kam);
   //cout << kss << endl;
   cout << "starting threads..." << endl;
-  thread one_min_thread(update_5_sec,"ETHUSD");
+  //thread one_min_thread(update_5_sec,"ETHUSD");
   thread kohlcs_thread(kohlcs_thread_function);
   
   try {  
