@@ -10,36 +10,36 @@
 
 namespace kraken { 
 
-//------------------------------------------------------------------------------
-// deals with recent trade data:
-struct KTrade {
-
-   enum Otype_t { MARKET='m', LIMIT='l' };
-   enum Order_t { BUY='b', SELL='s' };
-
-   double price, volume;
-   time_t time;
-   Otype_t otype;
-   Order_t order;
-   std::string misc;
-
-   // default ctor
-   KTrade() :price(0), volume(0), time(0),
-	     otype(KTrade::MARKET), 
-	     order(KTrade::BUY) { }
-
-   // construct from a JSONNode 
-   KTrade(JSONNode node);
-};
-
+  //------------------------------------------------------------------------------
+  // deals with recent trade data:
+  struct KTrade {
+	
+	enum Otype_t { MARKET='m', LIMIT='l' };
+	enum Order_t { BUY='b', SELL='s' };
+	
+	double price, volume;
+	time_t time;
+	Otype_t otype;
+	Order_t order;
+	std::string misc;
+	
+	// default ctor
+	KTrade() :price(0), volume(0), time(0),
+			  otype(KTrade::MARKET), 
+			  order(KTrade::BUY) { }
+	
+	// construct from a JSONNode 
+	KTrade(JSONNode node);
+  };
+  
   typedef std::vector<KTrade> KTradeStorage;
   
-//------------------------------------------------------------------------------
-// helper function to print a KTrade
-std::ostream& operator<<(std::ostream& os, const KTrade& kt);
-
-//------------------------------------------------------------------------------
-
+  //------------------------------------------------------------------------------
+  // helper function to print a KTrade
+  std::ostream& operator<<(std::ostream& os, const KTrade& kt);
+  
+  //------------------------------------------------------------------------------
+  
 }; // namespace Kraken
 
 //------------------------------------------------------------------------------

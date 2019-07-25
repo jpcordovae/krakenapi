@@ -40,19 +40,19 @@ namespace kraken {
     
     // makes public method to kraken.com 
     std::string public_method(const std::string& method,
-			      const KInput& input) const;
+							  const KInput& input) const;
     
     // makes private method to kraken.com
     std::string private_method(const std::string& method,
-			       const KInput& input) const;
+							   const KInput& input) const;
     
     // returns recent Kraken recent trade data
     std::string trades(const std::string& pair,
-		       const std::string& since,
-		       std::vector<KTrade>& output);
+					   const std::string& since,
+					   std::vector<KTrade>& output);
     
     std::string orderbook(const std::string &pair,
-			  KOrderBook &kob);
+						  KOrderBook &kob);
     
     std::string server_time(std::time_t &time);
     
@@ -62,12 +62,12 @@ namespace kraken {
     
     // return last
     std::string spread(const std::string &pair,
-		       const std::string &since,
-		       KSpreadStorage &output);
+					   const std::string &since,
+					   KSpreadStorage &output);
     
     std::string OHLC(const std::string &pair, const std::string &since,
-		     const std::string &interval, KOHLCStorage &ohlcs);
-
+					 const std::string &interval, KOHLCStorage &ohlcs);
+	
     std::string asset_pairs(KAssetPairs &kaps);
 
   private:
@@ -79,12 +79,12 @@ namespace kraken {
     
     // create signature for private requests
     std::string signature(const std::string& path,
-			  const std::string& nonce,
-			  const std::string& postdata) const;
+						  const std::string& nonce,
+						  const std::string& postdata) const;
     
     // CURL writefunction callback
     static size_t write_cb(char* ptr, size_t size, 
-			   size_t nmemb, void* userdata);
+						   size_t nmemb, void* userdata);
     
     std::string key_;     // API key
     std::string secret_;  // API secret
