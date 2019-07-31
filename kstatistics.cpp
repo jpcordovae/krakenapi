@@ -7,11 +7,12 @@
 #include <tuple>
 #include <algorithm>
 
-#include "kutils.hpp"
+#include "kraken/kutils.hpp"
 #include "kraken/kplot.hpp"
 #include "kraken/kclient.hpp"
 #include "kraken/kohlc.hpp"
 #include "kraken/korderbook.hpp"
+#include "kraken/ktrade.hpp"
 
 using namespace std;
 using namespace kraken;
@@ -26,7 +27,7 @@ client_data CD;
 mutex mtxCD;
 KAssetsMap kam;
 
-void ohlcs_thread_function()
+void ohlcs_thread_function(const string kpair)
 {
   cout << "initializing OHLC thread..." << endl;
   KOHLCStorage kohlcs;
@@ -37,20 +38,20 @@ void ohlcs_thread_function()
     try{
       //BEGIN Critical Section
       mtxCD.lock();
-      last = CD.client.OHLC("ETHUSD",last.c_str(),"1",kohlcs);
-      mtxCD.unlock(); 
+      last = CD.client.OHLC(kpair,last.c_str(),"1",kohlcs);
+      mtxCD.unlock();
       //END   Critical Section
       if(kohlcs.size()>=360) {
 		ofstream ffile(data_directory+last,ios::out | ios::binary | ios_base::ate);
-		ffile.write((char*)kohlcs.data(),kohlcs.size());
+		ffile.write((char*)kohlcs.data(),kohlcs.size()*sizeof(KOHLC));
 		ffile.close();
 		//cout << kohlcs  << endl;
 		kohlcs.clear();
       }
-      SafePrint{} << "buffer size: " << kohlcs.size() << std::endl;
+      SafePrint{} << "ohlc size: " << kohlcs.size() << "bytes" << std::endl;
     }
     catch(exception &e) {
-      SafePrint{} << "Error :" << e.what() << endl;
+      SafePrint{} << "OHLC thread error :" << e.what() << endl;
     }
     catch(...) {
       SafePrint{} << "Unknow exception." << endl;
@@ -59,30 +60,29 @@ void ohlcs_thread_function()
   }
 }
 
-void order_book_thread_function( string _asset )
+void order_book_thread_function( const string kpair )
 {
   SafePrint{} << "initializing order book thread..." << endl;
-  std::string filename = "data/kraken_order_book.bin";
+  std::string filename = "data/order_book.bin";
   KOrderBook kob;
   KOBStorage kobs;
-  
-  try {
 
+  try {
     while(1) {
       clear_korderbook(kob);
       //BEGIN Critical Section
       mtxCD.lock();
-      CD.client.orderbook(_asset,kob);
+      CD.client.orderbook(kpair,kob);
       mtxCD.unlock();
       //END   Critical Section
-	  kobs.push_back(kob);
+      kobs.push_back(kob);
       if(kobs.size()>=10) {
-		ofstream ffile(filename,ios::out | ios::binary | ios_base::ate);
-		ffile.write((char*)kobs.data(),kobs.size());
-		ffile.close();
-		kobs.clear();
+        ofstream ffile(filename,ios::out | ios::binary | ios_base::ate);
+        ffile.write((char*)kobs.data(),kobs.size()*sizeof(KOrderBook));
+        ffile.close();
+        kobs.clear();
       }
-      SafePrint{} << "order book buffer size: " << kobs.size() << std::endl;
+      SafePrint{} << "order book: " << kobs.size() << "bytes" << std::endl;
       std::vector<double> prices_asks  = get_prices(kob.lAsks);
       std::vector<double> volumes_asks = get_volumes(kob.lAsks);
       std::vector<double> prices_bids  = get_prices(kob.lBids);
@@ -90,15 +90,14 @@ void order_book_thread_function( string _asset )
       double mmin = *(min_element(prices_bids.begin(),prices_bids.end()));
       double mmax = *(max_element(prices_asks.begin(),prices_asks.end()));
       //gp << "set yrange [0:1500]\n";
-      gp << "set xrange [" << mmin << ":" << mmax << "]\n";
-      gp << "set grid ytics lt 0 lw 1\n";
-      gp << "set grid xtics lt 0 lw 1\n";
-      gp << "plot '-' with points title 'asks', '-' with points title 'bids'\n";
-      gp.send1d(make_tuple(prices_asks,volumes_asks));
-      gp.send1d(make_tuple(prices_bids,volumes_bids));
+      //gp << "set xrange [" << mmin << ":" << mmax << "]\n";
+      //gp << "set grid ytics lt 0 lw 1\n";
+      //gp << "set grid xtics lt 0 lw 1\n";
+      //gp << "plot '-' with points title 'asks', '-' with points title 'bids'\n";
+      //gp.send1d(make_tuple(prices_asks,volumes_asks));
+      //gp.send1d(make_tuple(prices_bids,volumes_bids));
       //gp.send1d(make_tuple(prices_asks,volumes_asks,prices_bids,volumes_bids));
       this_thread::sleep_for(chrono::milliseconds(2500));// 60 seconds
-	  
     }
   } catch( const exception& e ) {
     cerr << "korderbook Error: " << e.what() << endl;
@@ -107,68 +106,77 @@ void order_book_thread_function( string _asset )
   }
 }
 
-void spread_thread_function()
+void spread_thread_function(const string kpair)
 {
   SafePrint{} << "initializing spread thread..." << endl;
   string last = "0";
   string data_directory = "data/spread_";
   KSpreadStorage kss;
+
   try {
     while(1) {
       //BEGIN Critical Section
       mtxCD.lock();
-      last = CD.client.spread("ETHUSD",last,kss);
+      last = CD.client.spread(kpair,last,kss);
       mtxCD.unlock();
       //END   Critical Section
-
-	  /*for_each(kss.begin(),kss.end(),[&](const KSpread &ks){
-									   cout << to_string(ks.time)
-											<< " , " << ks.bid
-											<< " , " << ks.ask << endl;});*/
+      SafePrint() << "spread: " << kss.size() << " bytes" << endl;
+      /*for_each(kss.begin(),kss.end(),[&](const KSpread &ks){
+        cout << to_string(ks.time)
+        << " , " << ks.bid
+        << " , " << ks.ask << endl;});*/
       //gp << "set yrange [0:1500]\n";
       //gp << "set xrange [750:850]\n";
       //gp << "plot '-' with points title 'asks', '-' with points title 'bids'\n";
       //gp.send1d(make_tuple(prices_asks,volumes_asks));
       //gp.send1d(make_tuple(prices_bids,volumes_bids));
       //gp.send1d(make_tuple(prices_asks,volumes_asks,prices_bids,volumes_bids));
-	  
-	  // save to a file
-	  if(kss.size()>=10*1024) {
-		ofstream ffile(data_directory+last,ios::out | ios::binary | ios_base::ate);
-		ffile.write((char*)kss.data(),kss.size());
-		ffile.close();
-		//cout << kohlcs  << endl;
-		kss.clear();
+      // save to a file
+      if(kss.size()>=10*1024) {
+        ofstream ffile(data_directory+last,ios::out | ios::binary | ios_base::ate);
+        ffile.write((char*)kss.data(),kss.size());
+        ffile.close();
+        //cout << kohlcs  << endl;
+        kss.clear();
       }
-
       this_thread::sleep_for(chrono::milliseconds( 2500));// 60 seconds
     }
   } catch( exception& e ) {
     SafePrint{} << "Error: " << e.what() << endl;
   } catch(...) {
     SafePrint{} << "Unknow exception." << endl;
-  } 
+  }
 }
 
-void trades_thread_function(string pair, string &last)
+void trades_thread_function(const string kpair)
 {
-  string path = "data/trades_";
+  SafePrint() << "initializing trades thread..." << endl;
+  string data_directory = "data/trades_";
+  string last = "0";
   KTradeStorage kts;
   try{
-    //BEGIN Critical Section
-	mtxCD.lock();
-	last = CD.client.trades("ETHUSD",last,kts);
-	mtxCD.unlock();
-	//END   Critical Section
-	//ktstorage.
-	if(kts.size()>=1000){
-	  // save trades to a file
-	}
+    while(1) {
+      //Begin Critical Section
+      mtxCD.lock();
+      last = CD.client.trades(kpair,last,kts);
+      mtxCD.unlock();
+      //END   Critical Section
+      SafePrint{} << "trades: " << kts.size() << " bytes " << endl;
+      // save to a file
+      if(kts.size()>=10*1024) {
+	ofstream ffile(data_directory+last,ios::out | ios::binary | ios_base::ate);
+	ffile.write((char*)kts.data(),kts.size());
+	ffile.close();
+	//cout << kohlcs  << endl;
+	kts.clear();
+      }
+      this_thread::sleep_for(chrono::milliseconds(2500));
+    }
   }
   catch(std::exception &e){
-	string what = "trade_thread exception: ";
-	what += e.what();
-	cerr << what << endl;
+    string what = "trade_thread exception: ";
+    what += e.what();
+    SafePrint{} << what << endl;
   }
 }
 
@@ -178,28 +186,27 @@ int main(int argc, char **argv)
   curl_global_init(CURL_GLOBAL_ALL);
   cout << "getting assets..." << endl;
   string last_timestamp_spread;
-  
-  
+  string kpair = "XBTUSD";
   //CD.client.print_assets(kam);
   //cout << kss << endl;
-	//BEGIN Critical Section
-	mtxCD.lock();
-	try{
-	  //CD.client.update_assets(kam);
-	}catch(std::exception &e){
-	  SafePrint() << "asset exception: " << e.what() << std::endl;
-	}
-	mtxCD.unlock();
-	//END Critical Section
-	// threads
-	SafePrint{} << "starting threads..." << endl;
-	thread order_book_thread(order_book_thread_function,"ETHUSD");
-	thread ohlcs_thread(ohlcs_thread_function);
-	thread spread_thread(spread_thread_function);
-  
+  //BEGIN Critical Section
+  mtxCD.lock();
+  try{
+    //CD.client.update_assets(kam);
+  }catch(std::exception &e){
+    SafePrint() << "asset exception: " << e.what() << std::endl;
+  }
+  mtxCD.unlock();
+  //END Critical Section
+  // threads
+  SafePrint{} << "starting threads..." << endl;
+  thread order_book_thread(order_book_thread_function,kpair);
+  thread ohlcs_thread(ohlcs_thread_function,kpair);
+  thread spread_thread(spread_thread_function,kpair);
+  thread trades_thread(trades_thread_function,kpair);
   
   try {  
-	
+    
     //**************************************************
     /*cout << endl;
       cout << "TRADES" << endl;

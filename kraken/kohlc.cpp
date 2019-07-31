@@ -16,7 +16,7 @@ namespace kraken {
 
   std::ostream& operator<<(std::ostream &os, const KOHLCStorage &KS) {
     std::for_each(KS.begin(),KS.end(),[&os](const KOHLC &kohlcs){
-	os << kohlcs << endl;
+        os << kohlcs << endl;
       });
     return os;
   }

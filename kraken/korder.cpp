@@ -34,5 +34,5 @@ std::vector<time_t> get_times(KOrders &kos)
     });
   return times;
 }
- 
+
 };

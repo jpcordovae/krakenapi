@@ -83,9 +83,9 @@ static std::string b64_encode(const std::vector<unsigned char>& data)
 
 //------------------------------------------------------------------------------
 // helper function to hash with HMAC algorithm:
-  static std::vector<unsigned char> 
-hmac_sha512(const std::vector<unsigned char>& data, 
-			const std::vector<unsigned char>& key)
+ static std::vector<unsigned char> 
+ hmac_sha512(const std::vector<unsigned char>& data, 
+	     const std::vector<unsigned char>& key)
 {   
    unsigned int len = EVP_MAX_MD_SIZE;
    std::vector<unsigned char> digest(len);
@@ -354,8 +354,8 @@ std::string KClient::orderbook(const std::string &pair, KOrderBook &kb)
 //------------------------------------------------------------------------------
 // downloads recent trade data:
 std::string KClient::trades(const std::string& pair, 
-							const std::string& since,
-							std::vector<KTrade>& output)
+			    const std::string& since,
+			    std::vector<KTrade>& output)
 {
   KInput ki;
   ki["pair"] = pair;

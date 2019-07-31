@@ -4,8 +4,10 @@
 #include <string>
 #include <map>
 #include <iostream>
-#include <vector> 
+#include <vector>
+#include <fstream>
 #include "../libjson/libjson.h"
+#include "kutils.hpp"
 
 using namespace std;
 
@@ -40,16 +42,16 @@ namespace kraken {
     string altname;
     string aclass_base;
     string base;
-    string aclass_quote; 
+    string aclass_quote;
     string quote;
     string lot;
     int pair_decimals;
     int lot_decimals;
     int lot_multiplier;
     // leverage ...
-    string fees; 
+    string fees;
     string fee_volume_currency;
-    int margin_call; 
+    int margin_call;
     int margin_stop;
     // construct a KAssets from an JSONNode:
     KAssetPair(const JSONNode& node) {
@@ -74,8 +76,15 @@ namespace kraken {
 
   //--------------------------------------------------------------
   // prints a KAsset_pair:
-  std::ostream& operator<<(std::ostream& os, const KAssetPair& a);
+  std::ostream& operator<<(std::ostream& os, const KAssetPair& kap);
   std::ostream& operator<<(std::ostream& os, const KAssetPairs& kaps);
+  //--------------------------------------------------------------
+  // save to a filebuf in binary form
+  std::ofstream& operator<<(std::ofstream& os, const KAssetPair &kap);
+  std::ifstream& operator>>(std::ifstream& ifs, const KAssetPair &kap);
+  std::ofstream& operator<<(std::ofstream& os, const KAssetPairs &kaps);
+  std::ifstream& operator>>(std::ifstream& ifs, const KAssetPairs &kaps);
+
 };//namespace kraken
 
 #endif

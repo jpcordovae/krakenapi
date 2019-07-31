@@ -6,6 +6,7 @@
 #include <string>
 #include "../libjson/libjson.h"
 #include <ctime>
+#include "kutils.hpp"
 
 namespace kraken{
 
@@ -19,13 +20,22 @@ namespace kraken{
       bid = node[1].as_float();
       ask = node[2].as_float();
     }
+
+    KSpread():time(0),bid(0.0f),ask(0.0f) { }
   };// struct KSpread
 
   typedef std::vector<KSpread> KSpreadStorage;
 
   std::ostream& operator<<(std::ostream &os, const KSpread &ks);
-  //std::ostream& operator<<(std::ostream &os, const KSpreadStorage &kss);
-  
+
+  // KSpread operators
+  std::ofstream& operator<<(std::ofstream &ofs, const KSpread &ks);
+  std::ifstream& operator>>(std::ifstream &ifs, KSpread &ks);
+
+  // KSpreadStorage operators
+  std::ofstream& operator<<(std::ofstream &ofs, const KSpreadStorage &kss);
+  std::ifstream& operator>>(std::ifstream &ifs, KSpreadStorage &kss);
+
 };// namespace kraken
 
 #endif

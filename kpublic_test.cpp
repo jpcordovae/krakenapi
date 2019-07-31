@@ -18,12 +18,12 @@ int main()
      
      KInput in;
      KClient client;
-     
+
      //**************************************************
      cout << endl;
      cout << "ORDERBOOK" << endl;
      KOrderBook kob;
-     cout << client.orderbook("ETHUSD",kob) << endl;    
+     cout << client.orderbook("ETHUSD",kob) << endl;
      //**************************************************
      cout << endl;
      cout << "TRADES" << endl;
