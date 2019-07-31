@@ -20,8 +20,6 @@ namespace kraken{
     static std::mutex _mutexSafePrint;
   };
 
-  std::mutex SafePrint::_mutexSafePrint{};
-
   std::ofstream& operator<<(std::ofstream &ofs, const std::string &str);
   std::ifstream& operator>>(std::ifstream &ifs, const std::string &str);
 

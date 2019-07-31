@@ -9,6 +9,8 @@ namespace kraken {
     std::cout << this->str();
   }
 
+  std::mutex SafePrint::_mutexSafePrint{};
+  
   std::ofstream& operator<<(std::ofstream &ofs, const std::string &str)
   {
     size_t size = str.size();

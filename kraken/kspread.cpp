@@ -45,6 +45,7 @@ namespace kraken {
       ifs >> ks;
       kss.push_back(ks);
     }
+	return ifs;
   }
 
 };//namespace kraken

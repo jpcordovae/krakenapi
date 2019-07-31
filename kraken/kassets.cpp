@@ -47,6 +47,8 @@ namespace kraken {
     return os;
   }
 
+  //------------------------------------------------------------------------------
+  // write  KAssetPair to a binary file
   std::ofstream& operator<<(std::ofstream& ofs, const KAssetPair &kap)
   {
     ofs << kap.name << kap.altname << kap.aclass_base << kap.base
@@ -60,19 +62,29 @@ namespace kraken {
     return ofs;
   }
 
-  std::ifstream& operator>>(std::ifstream &ifs, KAssetPair &kap)
+  //------------------------------------------------------------------------------
+  // read KAssetPair from a binary file
+  std::istream& operator>>(std::istream &ifs, KAssetPair &kap)
   {
-    ifs >> kap.name >> kap.altname >> kap.aclass_base >> kap.base
-        >> kap.aclass_base >> kap.quote >> kap.lot;
+    ifs >> kap.name;
+	ifs >> kap.altname;
+	ifs >> kap.aclass_base;
+	ifs >> kap.base;
+    ifs >> kap.aclass_base;
+	ifs >> kap.quote;
+	ifs >> kap.lot;
     ifs.read((char*)&kap.pair_decimals,sizeof(int));
     ifs.read((char*)&kap.lot_decimals,sizeof(int));
     ifs.read((char*)&kap.lot_multiplier,sizeof(int));
-    ifs >> kap.fees >> kap.fee_volume_currency;
+    ifs >> kap.fees;
+	ifs >> kap.fee_volume_currency;
     ifs.read((char*)&kap.margin_call,sizeof(int));
     ifs.read((char*)&kap.margin_stop,sizeof(int));
     return ifs;
   }
 
+  //------------------------------------------------------------------------------
+  // write KAssetPairs to a binary file
   std::ofstream& operator<<(std::ofstream &ofs, const KAssetPairs &kaps)
   {
     size_t size = kaps.size();
@@ -83,7 +95,9 @@ namespace kraken {
     return ofs;
   }
 
-  std::ifstream& operator>>(std::ifstream &ifs, KAssetPairs &kaps)
+  //------------------------------------------------------------------------------
+  // read KAssetPairs from a binary file
+  std::istream& operator>>(std::istream &ifs, KAssetPairs &kaps)
   {
     size_t size;
     ifs.read((char*)&size,sizeof(size_t));

@@ -2,7 +2,6 @@
 #define KASSETS_HPP_
 
 #include <string>
-#include <map>
 #include <iostream>
 #include <vector>
 #include <fstream>
@@ -80,10 +79,10 @@ namespace kraken {
   std::ostream& operator<<(std::ostream& os, const KAssetPairs& kaps);
   //--------------------------------------------------------------
   // save to a filebuf in binary form
-  std::ofstream& operator<<(std::ofstream& os, const KAssetPair &kap);
-  std::ifstream& operator>>(std::ifstream& ifs, const KAssetPair &kap);
-  std::ofstream& operator<<(std::ofstream& os, const KAssetPairs &kaps);
-  std::ifstream& operator>>(std::ifstream& ifs, const KAssetPairs &kaps);
+  std::ofstream& operator<<(std::ofstream &os , const KAssetPair &kap);
+  std::istream& operator>>(std::istream &ifs, const KAssetPair &kap);
+  std::ofstream& operator<<(std::ofstream &os , const KAssetPairs &kaps);
+  std::istream& operator>>(std::istream &ifs, const KAssetPairs &kaps);
 
 };//namespace kraken
 
