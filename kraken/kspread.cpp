@@ -18,7 +18,7 @@ namespace kraken {
     return ofs;
   }
 
-  std::ifstream& operator<<(std::ifstream &ifs, KSpread &ks)
+  std::ifstream& operator>>(std::ifstream &ifs, KSpread &ks)
   {
     ifs.read((char*)&ks.time,sizeof(std::time_t));
     ifs.read((char*)&ks.bid,sizeof(float));

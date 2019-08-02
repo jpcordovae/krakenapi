@@ -21,7 +21,7 @@ namespace kraken{
   };
 
   std::ofstream& operator<<(std::ofstream &ofs, const std::string &str);
-  std::ifstream& operator>>(std::ifstream &ifs, const std::string &str);
+  std::ifstream& operator>>(std::ifstream &ifs, std::string &str);
 
 }
 

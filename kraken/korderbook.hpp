@@ -6,6 +6,7 @@
 #include "korder.hpp"
 #include <iostream>
 #include <vector>
+#include "kutils.hpp"
 
 namespace kraken
 {
@@ -40,6 +41,11 @@ namespace kraken
   void clear_korderbook(KOrderBook &_kob);
   
   std::ostream& operator<<(std::ostream &oss,KOrderBook &kob);
+  std::ofstream& operator<<(std::ofstream &ofs, const KOrderBook &kob);
+  std::ifstream& operator>>(std::ifstream &ifs, KOrderBook &kob);
+
+  std::ofstream& operator<<(std::ofstream &ofs, const KOBStorage &kobs);
+  std::ifstream& operator>>(std::ifstream &ifs, KOBStorage &kobs);
   
 };
 

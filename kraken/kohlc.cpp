@@ -17,27 +17,27 @@ namespace kraken {
 
     std::ofstream& operator<<(std::ofstream &ofs,const KOHLC &kohlc)
   {
-	ofs.write((char*)&kohlc.ktime,sizeof(time_t));
-	ofs.write((char*)&kohlc.open,sizeof(float));
-	ofs.write((char*)&kohlc.high,sizeof(float));
-	ofs.write((char*)&kohlc.low,sizeof(float));
-	ofs.write((char*)&kohlc.close,sizeof(float));
-	ofs.write((char*)&kohlc.vwap,sizeof(float));
-	ofs.write((char*)&kohlc.volume,sizeof(float));
-	ofs.write((char*)&kohlc.count,sizeof(float));
+	ofs.write(reinterpret_cast<char*>(const_cast<time_t*>(&kohlc.ktime)),sizeof(time_t));
+	ofs.write(reinterpret_cast<char*>(const_cast<float*>(&kohlc.open)),sizeof(float));
+	ofs.write(reinterpret_cast<char*>(const_cast<float*>(&kohlc.high)),sizeof(float));
+	ofs.write(reinterpret_cast<char*>(const_cast<float*>(&kohlc.low)),sizeof(float));
+	ofs.write(reinterpret_cast<char*>(const_cast<float*>(&kohlc.close)),sizeof(float));
+	ofs.write(reinterpret_cast<char*>(const_cast<float*>(&kohlc.vwap)),sizeof(float));
+	ofs.write(reinterpret_cast<char*>(const_cast<float*>(&kohlc.volume)),sizeof(float));
+	ofs.write(reinterpret_cast<char*>(const_cast<float*>(&kohlc.count)),sizeof(float));
 	return ofs;
   }
 
   std::ifstream& operator>>(std::ifstream &ifs, KOHLC &kohlc)
   {
-	ifs.read((char*)&kohlc.ktime,sizeof(time_t));
-	ifs.read((char*)&kohlc.open,sizeof(float));
-	ifs.read((char*)&kohlc.high,sizeof(float));
-	ifs.read((char*)&kohlc.low,sizeof(float));
-	ifs.read((char*)&kohlc.close,sizeof(float));
-	ifs.read((char*)&kohlc.vwap,sizeof(float));
-	ifs.read((char*)&kohlc.volume,sizeof(float));
-	ifs.read((char*)&kohlc.count,sizeof(float));
+	ifs.read(reinterpret_cast<char*>(&kohlc.ktime),sizeof(time_t));
+	ifs.read(reinterpret_cast<char*>(&kohlc.open),sizeof(float));
+	ifs.read(reinterpret_cast<char*>(&kohlc.high),sizeof(float));
+	ifs.read(reinterpret_cast<char*>(&kohlc.low),sizeof(float));
+	ifs.read(reinterpret_cast<char*>(&kohlc.close),sizeof(float));
+	ifs.read(reinterpret_cast<char*>(&kohlc.vwap),sizeof(float));
+	ifs.read(reinterpret_cast<char*>(&kohlc.volume),sizeof(float));
+	ifs.read(reinterpret_cast<char*>(&kohlc.count),sizeof(float));
 	return ifs;
   }
   

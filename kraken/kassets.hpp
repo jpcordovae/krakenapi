@@ -33,7 +33,9 @@ namespace kraken {
   //--------------------------------------------------------------------
   // prints a KAsset:
   std::ostream& operator<<(std::ostream& os, const KAsset& a);
-
+  std::ofstream& operator<<(std::ofstream& ofs, const KAsset& a);
+  std::ifstream& operator>>(std::ifstream& ifs, KAsset& a);
+  
   //--------------------------------------------------------------------
   // deals with Kraken assets:
   struct KAssetPair {

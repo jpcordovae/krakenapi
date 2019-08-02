@@ -19,7 +19,7 @@ namespace kraken {
     return ofs;
   }
 
-  std::ifstream& operator>>(std::ifstream &ifs, const std::string &str)
+  std::ifstream& operator>>(std::ifstream &ifs, std::string &str)
   {
     size_t size;
     ifs.read((char *)&size,sizeof(size_t));

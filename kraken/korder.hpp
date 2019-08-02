@@ -3,9 +3,11 @@
 
 #include <string>
 #include <iostream>
+#include <fstream>
 #include <vector>
 
 #include "../libjson/libjson.h"
+#include "kutils.hpp"
 
 namespace kraken{
 
@@ -30,9 +32,15 @@ namespace kraken{
     
   };
 
-  std::ostream& operator<<(std::ostream &os,const KOrder &ko);
-  
+  std::ostream& operator<<(std::ostream &os, const KOrder &ko);
+  std::ofstream& operator<<(std::ofstream &ofs, const KOrder &ko);
+  std::ifstream& operator>>(std::ifstream &ifs, KOrder &ko);
+
   typedef std::vector<KOrder> KOrders;
+
+  std::ostream& operator<<(std::ostream &os, const KOrders &kos);
+  std::ofstream& operator<<(std::ofstream &ofs, const KOrders &kos);
+  std::ifstream& operator>>(std::ifstream &ifs, KOrders &kos);
   
   std::vector<double> get_prices(KOrders &kos);
   std::vector<double> get_volumes(KOrders &kos);

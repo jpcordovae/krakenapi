@@ -16,6 +16,20 @@ namespace kraken {
               << '\"';
   }
 
+  std::ofstream& operator<<(std::ofstream& ofs, const KAsset& ka)
+  {
+	ofs << ka.name << ka.altname << ka.aclass << ka.decimals << ka.display_decimals;
+	return ofs;
+  }
+  
+  std::ifstream& operator>>(std::ifstream& ifs, KAsset& ka)
+  {
+	ifs >> ka.name >> ka.altname >> ka.aclass;
+	ifs.read(reinterpret_cast<char*>(&ka.decimals),sizeof(int));
+	ifs.read(reinterpret_cast<char*>(&ka.display_decimals),sizeof(int));
+	return ifs;
+  }
+  
   //------------------------------------------------------------------------------
   // prints a KAssetPair
   std::ostream& operator<<(std::ostream& os, const KAssetPair& a)

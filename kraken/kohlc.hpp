@@ -40,13 +40,13 @@ namespace kraken{
   typedef std::vector<KOHLC> KOHLCStorage;
   // KOHLC operatorrs
   std::ostream& operator<<(std::ostream &os, const KOHLC &kohlc);
-  std::ofstream& operator<<(std::ofstream &ifs,const KOHLC &kohlc);
+  std::ofstream& operator<<(std::ofstream &ofs,const KOHLC &kohlc);
   std::ifstream& operator>>(std::ifstream &ifs, KOHLC &kohlc);
   
   // KOHLCStorage operators
   std::ostream& operator<<(std::ostream &os, const KOHLCStorage &KS);
   std::ofstream& operator<<(std::ofstream &ofs, const KOHLCStorage & kohlcs);
-  std::ifstream& operator>>(std::ifstream &ifs, const KOHLCStorage & kohlcs);
+  std::ifstream& operator>>(std::ifstream &ifs, KOHLCStorage & kohlcs);
   
 };
 

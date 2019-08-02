@@ -43,9 +43,8 @@ void ohlcs_thread_function(const string kpair)
       //END   Critical Section
       if(kohlcs.size()>=360) {
 		ofstream ffile(data_directory+last,ios::out | ios::binary | ios_base::ate);
-		ffile.write((char*)kohlcs.data(),kohlcs.size()*sizeof(KOHLC));
+		ffile << kohlcs;
 		ffile.close();
-		//cout << kohlcs  << endl;
 		kohlcs.clear();
       }
       SafePrint{} << "ohlc size: " << kohlcs.size() << "bytes" << std::endl;
@@ -70,19 +69,25 @@ void order_book_thread_function( const string kpair )
   try {
     while(1) {
       clear_korderbook(kob);
+	  
       //BEGIN Critical Section
       mtxCD.lock();
       CD.client.orderbook(kpair,kob);
       mtxCD.unlock();
       //END   Critical Section
+	  
       kobs.push_back(kob);
+
+	  SafePrint{} << "OrderBook size: " << endl  << kob.pair << ", asks: " << kob.lAsks << ", bids" << kob.lBids << std::endl;
+      SafePrint{} << "order book storage size : " << kobs.size() << std::endl;
+
       if(kobs.size()>=10) {
         ofstream ffile(filename,ios::out | ios::binary | ios_base::ate);
-        ffile.write((char*)kobs.data(),kobs.size()*sizeof(KOrderBook));
+        ffile << kobs;
         ffile.close();
         kobs.clear();
       }
-      SafePrint{} << "order book: " << kobs.size() << "bytes" << std::endl;
+	  
       std::vector<double> prices_asks  = get_prices(kob.lAsks);
       std::vector<double> volumes_asks = get_volumes(kob.lAsks);
       std::vector<double> prices_bids  = get_prices(kob.lBids);
@@ -132,11 +137,10 @@ void spread_thread_function(const string kpair)
       //gp.send1d(make_tuple(prices_bids,volumes_bids));
       //gp.send1d(make_tuple(prices_asks,volumes_asks,prices_bids,volumes_bids));
       // save to a file
-      if(kss.size()>=10*1024) {
+      if(kss.size()>=360) {
         ofstream ffile(data_directory+last,ios::out | ios::binary | ios_base::ate);
-        ffile.write((char*)kss.data(),kss.size());
+        ffile << kss;
         ffile.close();
-        //cout << kohlcs  << endl;
         kss.clear();
       }
       this_thread::sleep_for(chrono::milliseconds( 2500));// 60 seconds
@@ -160,15 +164,15 @@ void trades_thread_function(const string kpair)
       mtxCD.lock();
       last = CD.client.trades(kpair,last,kts);
       mtxCD.unlock();
+	  //SafePrint{} << "Trades: " << kts << endl;
       //END   Critical Section
       SafePrint{} << "trades: " << kts.size() << " bytes " << endl;
       // save to a file
       if(kts.size()>=10*1024) {
-	ofstream ffile(data_directory+last,ios::out | ios::binary | ios_base::ate);
-	ffile.write((char*)kts.data(),kts.size());
-	ffile.close();
-	//cout << kohlcs  << endl;
-	kts.clear();
+		ofstream ffile(data_directory+last,ios::out | ios::binary | ios_base::ate);
+		ffile << kts;
+		ffile.close();
+		kts.clear();
       }
       this_thread::sleep_for(chrono::milliseconds(2500));
     }
@@ -198,7 +202,8 @@ int main(int argc, char **argv)
   }
   mtxCD.unlock();
   //END Critical Section
-  // threads
+  
+  // Threads
   SafePrint{} << "starting threads..." << endl;
   thread order_book_thread(order_book_thread_function,kpair);
   thread ohlcs_thread(ohlcs_thread_function,kpair);

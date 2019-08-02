@@ -38,6 +38,7 @@ namespace kraken {
   //------------------------------------------------------------------------------
   // helper function to print a KTrade
   std::ostream& operator<<(std::ostream& os, const KTrade& kt);
+  std::ostream& operator<<(std::ostream& os, const KTradeStorage &kts);
 
   //------------------------------------------------------------------------------
   // wrtie KTrade and KTradeStorage to a binary file

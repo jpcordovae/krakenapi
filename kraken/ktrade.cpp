@@ -1,4 +1,5 @@
 #include <iomanip>
+#include <algorithm>
 #include "ktrade.hpp"
 
 //------------------------------------------------------------------------------
@@ -34,6 +35,16 @@ namespace kraken
               << std::setprecision(9) << kt.volume << '"';
   }
 
+  //-----------------------------------------------------------------------------
+
+  std::ostream& operator<<(std::ostream& os, const KTradeStorage &kts)
+  {
+	std::for_each(kts.begin(),kts.end(),[&](const KTrade &kt){
+									 os << kt;
+								   });
+	return os;
+  }
+  
   //-----------------------------------------------------------------------------
 
   std::ofstream& operator<<(std::ofstream &ofs, const KTrade& kt)

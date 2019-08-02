@@ -387,12 +387,13 @@ std::string KClient::trades(const std::string& pair,
   
   std::string last = libjson::to_std_string( result.at("last").as_string() );
   
-  std::vector<KTrade> buf;
+  //std::vector<KTrade> buf;
   for (JSONNode::const_iterator it = result_pair.begin(); it != result_pair.end(); ++it){
-	buf.push_back(KTrade(*it));
+	//buf.push_back(KTrade(*it));
+	output.push_back(KTrade(*it));
   }
   
-  output.swap(buf);
+  //output.swap(buf);
   return last;
 }
 
