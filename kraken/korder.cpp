@@ -31,7 +31,7 @@ namespace kraken {
   std::ostream& operator<<(std::ostream &os, const KOrders &kos)
   {
 	std::for_each(kos.begin(),kos.end(),[&](const KOrder &ko){
-										   os << ko;
+										  os << ko << std::endl;
 										 });
 	return os;
   }

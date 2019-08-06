@@ -55,6 +55,9 @@ namespace kraken {
   {
 	size_t size = kohlcs.size();
 	ofs.write(reinterpret_cast<char*>(&size),sizeof(size_t));
+	std::for_each(kohlcs.begin(),kohlcs.end(),[&](const KOHLC &kohlc){
+										ofs << kohlc << endl;
+									  });
 	return ofs;
   }
 

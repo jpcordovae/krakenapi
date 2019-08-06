@@ -368,18 +368,19 @@ std::string KClient::trades(const std::string& pair,
   // throw an exception if there are errors in the JSON response
   if (!root.at("error").empty()) {
 	std::ostringstream oss;
-	oss << "Kraken response contains errors: ";
+	SafePrint{} << "Kraken response contains errors: ";
     
 	// append errors to output string stream
 	for (JSONNode::const_iterator it = root["error"].begin(); it != root["error"].end(); ++it) 
-	  oss << std::endl << " * " << libjson::to_std_string(it->as_string());
+	  SafePrint{} << std::endl << " * " << libjson::to_std_string(it->as_string());
 	
-	throw std::runtime_error(oss.str());
+	return since;
   }
   
   // throw an exception if result is empty   
   if (root.at("result").empty()){
-	throw std::runtime_error("Kraken response doesn't contain result data");
+	SafePrint{} << "Kraken response doesn't contain result data";
+    return since;
   }
   
   JSONNode &result = root["result"];
@@ -387,13 +388,10 @@ std::string KClient::trades(const std::string& pair,
   
   std::string last = libjson::to_std_string( result.at("last").as_string() );
   
-  //std::vector<KTrade> buf;
   for (JSONNode::const_iterator it = result_pair.begin(); it != result_pair.end(); ++it){
-	//buf.push_back(KTrade(*it));
 	output.push_back(KTrade(*it));
   }
-  
-  //output.swap(buf);
+
   return last;
 }
 

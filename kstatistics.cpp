@@ -26,11 +26,13 @@ typedef struct client_data {
 client_data CD;
 mutex mtxCD;
 KAssetsMap kam;
+KOHLCStorage kohlcs;
+KOBStorage kobs;
+KTradeStorage kts;
 
 void ohlcs_thread_function(const string kpair)
 {
-  cout << "initializing OHLC thread..." << endl;
-  KOHLCStorage kohlcs;
+  cout << "initializing OHLC thread..." << endl;  
   std::string last = "0";
   SafePrint{} << "kohlcs thread starting..." << std::endl;
   std::string data_directory = "data/ohlc_";
@@ -41,7 +43,7 @@ void ohlcs_thread_function(const string kpair)
       last = CD.client.OHLC(kpair,last.c_str(),"1",kohlcs);
       mtxCD.unlock();
       //END   Critical Section
-      if(kohlcs.size()>=360) {
+      if(kohlcs.size()>=360) { // 10 mins aprox
 		ofstream ffile(data_directory+last,ios::out | ios::binary | ios_base::ate);
 		ffile << kohlcs;
 		ffile.close();
@@ -64,7 +66,6 @@ void order_book_thread_function( const string kpair )
   SafePrint{} << "initializing order book thread..." << endl;
   std::string filename = "data/order_book.bin";
   KOrderBook kob;
-  KOBStorage kobs;
 
   try {
     while(1) {
@@ -73,12 +74,11 @@ void order_book_thread_function( const string kpair )
       //BEGIN Critical Section
       mtxCD.lock();
       CD.client.orderbook(kpair,kob);
+      kobs.push_back(kob);
       mtxCD.unlock();
       //END   Critical Section
 	  
-      kobs.push_back(kob);
-
-	  SafePrint{} << "OrderBook size: " << endl  << kob.pair << ", asks: " << kob.lAsks << ", bids" << kob.lBids << std::endl;
+	  //SafePrint{} << "OrderBook size: " << endl  << kob.pair << ", asks: " << kob.lAsks << ", bids" << kob.lBids << std::endl;
       SafePrint{} << "order book storage size : " << kobs.size() << std::endl;
 
       if(kobs.size()>=10) {
@@ -157,7 +157,6 @@ void trades_thread_function(const string kpair)
   SafePrint() << "initializing trades thread..." << endl;
   string data_directory = "data/trades_";
   string last = "0";
-  KTradeStorage kts;
   try{
     while(1) {
       //Begin Critical Section
@@ -205,10 +204,14 @@ int main(int argc, char **argv)
   
   // Threads
   SafePrint{} << "starting threads..." << endl;
+  //try {
   thread order_book_thread(order_book_thread_function,kpair);
   thread ohlcs_thread(ohlcs_thread_function,kpair);
   thread spread_thread(spread_thread_function,kpair);
   thread trades_thread(trades_thread_function,kpair);
+  //} catch(std::exception &e) {
+  //std::cout << "Exception captured : " << e.what() << std::endl;
+  //}
   
   try {  
     
