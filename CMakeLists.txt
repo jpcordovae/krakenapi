@@ -1,8 +1,8 @@
 cmake_minimum_required (VERSION 2.6)
 project (KRAKENAPI)
 
-add_definitions("-std=c++11")
-
+add_definitions("-std=c++17")
+#add_definitions("-std=gnu++1z")
 #-------------------------------------------------------------------------------
 IF (CMAKE_CXX_COMPILER_ID STREQUAL Clang)
 	add_definitions("-Wno-tautological-compare")
@@ -109,3 +109,10 @@ set_target_properties(	kstatistics PROPERTIES
 			COMPILE_DEFINITIONS_DEBUG "JSON_DEBUG;JSON_SAFE;JSON_ISO_STRICT")
 target_link_libraries(kstatistics ${LIBS} ${CMAKE_THREAD_LIBS_INIT} boost_iostreams boost_system boost_filesystem)
 
+#------------------------------------------------------------------------------
+#Add the executable 'kprocessing_data'
+#------------------------------------------------------------------------------
+add_executable(kprocessing_data kprocessing_data.cpp kraken/kclient.cpp kraken/kohlc.cpp kraken/kutils.cpp)
+set_target_properties(kprocessing_data PROPERTIES
+  COMPILE_DEFINITIONS_DEBUG "JSON_DEBUG;JSON_SAFE;JSON_IS_STRICT")
+target_link_libraries(kprocessing_data ${LIBS} ${CMAKE_THREAD_LIBS_INIT} stdc++fs)

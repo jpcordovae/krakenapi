@@ -7,8 +7,13 @@
 #include <fstream>
 #include <string>
 #include <mutex>
+#include <filesystem>
+#include <vector>
+#include <algorithm>
 
 namespace kraken{
+
+  namespace fs = std::filesystem;
 
   class SafePrint: public std::ostringstream
   {
@@ -22,6 +27,14 @@ namespace kraken{
 
   std::ofstream& operator<<(std::ofstream &ofs, const std::string &str);
   std::ifstream& operator>>(std::ifstream &ifs, std::string &str);
+
+  struct filename_string{
+    std::string operator()(const fs::directory_entry &entry) {
+      return entry.path().filename();
+    }
+  };
+
+  void get_files_from_directory(const std::string &pname, std::vector<std::string> &v);
 
 }
 

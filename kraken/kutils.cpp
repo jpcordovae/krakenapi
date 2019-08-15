@@ -10,7 +10,7 @@ namespace kraken {
   }
 
   std::mutex SafePrint::_mutexSafePrint{};
-  
+
   std::ofstream& operator<<(std::ofstream &ofs, const std::string &str)
   {
     size_t size = str.size();
@@ -29,5 +29,21 @@ namespace kraken {
     delete[] buffer;
     return ifs;
   }
+
+  void get_files_from_directory(const std::string &pname, std::vector<std::string> &v)
+  {
+
+    fs::path p(pname);
+    fs::directory_iterator di(p);
+
+    std::transform(fs::begin(di),fs::end(di),std::back_inserter(v),[&](const fs::directory_entry &de){
+        return de.path().filename();
+      });
+    //std::copy_if(di.begin(),di.end(),std::back_inserter(v),[&](const fs::directory_entry &entry){
+    //    return entry.is_regular_file();
+    //  });
+  }
+
+
 
 }

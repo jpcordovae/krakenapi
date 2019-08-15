@@ -213,7 +213,7 @@ int main(int argc, char **argv)
   //std::cout << "Exception captured : " << e.what() << std::endl;
   //}
   
-  try {  
+  try {
     
     //**************************************************
     /*cout << endl;

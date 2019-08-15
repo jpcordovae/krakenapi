@@ -1,13 +1,14 @@
-#include "kclient.cpp"
 #include <stdlib.h>
 #include <iostream>
 #include <list>
 #include <string>
 #include <memory>
-#include <filesystem>
+
+#include "kraken/kutils.hpp"
+#include "kraken/kclient.hpp"
 
 using namespace std;
-nmaespace fs = std::filesystem;
+using namespace kraken;
 
 typedef struct client_data {
   KInput in;
@@ -16,18 +17,13 @@ typedef struct client_data {
 
 client_data CD;
 
-
-list<string> get_file_names(string directory)
+int main(int argc, char **argv)
 {
-  list<string> tmp;
-  return tmp;
-}
-
-int main(int argc, char argv[])
-{
-  string path = "/home/jpce/RPIO/kraken/build/data/";
-  string filename = "15*";
+  std::vector<std::string> vString;
+  string path = "/home/jcordovaech/krakenapi/build/data/";
+  get_files_from_directory(path,vString);
+  std::for_each(vString.begin(),vString.end(),[&](const std::string &str){
+      std::cout << str << std::endl;
+    });
   return EXIT_SUCCESS;
 }
-
-
