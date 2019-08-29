@@ -35,15 +35,23 @@ namespace kraken {
 
     fs::path p(pname);
     fs::directory_iterator di(p);
-
-    std::transform(fs::begin(di),fs::end(di),std::back_inserter(v),[&](const fs::directory_entry &de){
-        return de.path().filename();
-      });
-    //std::copy_if(di.begin(),di.end(),std::back_inserter(v),[&](const fs::directory_entry &entry){
-    //    return entry.is_regular_file();
-    //  });
+    std::transform(fs::begin(di), fs::end(di), std::back_inserter(v),
+                   [&](const fs::directory_entry &de){
+                     return de.path().filename();
+                   });
   }
 
+  /*bool filter_files_from_directory(const std::string &path, const std::set<std::string> &filter, std::vector<std::string> &vStr)
+  {
+    fs::path p(path);
+    for(const fs::directory_entry &di: fs::directory_iterator(p)) {
+      if(filter.find(di.path().extension()) != filter.end()) {
+        vStr.push_back(di.path());
+      }else{
+
+      }
+    }
+  }*/
 
 
 }

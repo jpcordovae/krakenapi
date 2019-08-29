@@ -14,6 +14,18 @@
 #include "kraken/korderbook.hpp"
 #include "kraken/ktrade.hpp"
 
+// deamonization
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <signal.h>
+
+#define LOG_FILE "example.log"
+#define TMP_FILENAME "/tmp/tmpkstatistics.tmp"
+
 using namespace std;
 using namespace kraken;
 //------------------------------------------------------------------------------
@@ -32,7 +44,7 @@ KTradeStorage kts;
 
 void ohlcs_thread_function(const string kpair)
 {
-  cout << "initializing OHLC thread..." << endl;  
+  cout << "initializing OHLC thread..." << endl;
   std::string last = "0";
   SafePrint{} << "kohlcs thread starting..." << std::endl;
   std::string data_directory = "data/ohlc_";
@@ -126,10 +138,6 @@ void spread_thread_function(const string kpair)
       mtxCD.unlock();
       //END   Critical Section
       SafePrint() << "spread: " << kss.size() << " bytes" << endl;
-      /*for_each(kss.begin(),kss.end(),[&](const KSpread &ks){
-        cout << to_string(ks.time)
-        << " , " << ks.bid
-        << " , " << ks.ask << endl;});*/
       //gp << "set yrange [0:1500]\n";
       //gp << "set xrange [750:850]\n";
       //gp << "plot '-' with points title 'asks', '-' with points title 'bids'\n";
@@ -183,9 +191,69 @@ void trades_thread_function(const string kpair)
   }
 }
 
-
-int main(int argc, char **argv) 
+void log_message(char *filename, char *mnessage)
 {
+  FILE *logfile;
+  logfile = fopen(filename,"a");
+  if(!logfile) return;
+  fclose(logfile);
+}
+
+void signal_handler(int sig)
+{
+  switch(sig){
+  case SIGHUP:
+    log_message(LOG_FILE,"hangup signal catched");
+    break;
+  case SIGTERM:
+    log_message(LOG_FILE,"terminate signal catched");
+    exit(EXIT_SUCCESS);
+    break;
+  default:
+    break;
+  }
+}
+
+static void daemonize(void)
+{
+  int pid, sid;
+  char str[10];
+  memset(str,0x00,sizeof(str));
+  /*already a deamon*/
+  if(getppid() == 1) return;
+  pid = fork();
+  if(pid<0){
+    exit(EXIT_FAILURE);
+  }
+  if(pid>0){
+    exit(EXIT_SUCCESS);
+  }
+  sid = setsid();
+  if(sid<0){
+    exit(EXIT_FAILURE);
+  }
+  /*if(chdir("/")<0){
+    exit(EXIT_FAILURE);
+    }*/
+  //http://www.enderunix.org/docs/eng/daemon.php
+  int lpf = open(TMP_FILENAME,O_RDWR|O_CREAT,0640);
+  if(lpf<0) exit(1);
+  if(lockf(lpf,F_TLOCK,0)<0) exit(0);
+  /* first instance continues */
+  sprintf(str,"%d,\n",strlen(str)); /* record pid to lockfile */
+  signal(SIGCHLD,SIG_IGN);
+  signal(SIGTSTP,SIG_IGN);
+  signal(SIGTTOU,SIG_IGN);
+  signal(SIGTTIN,SIG_IGN);
+  signal(SIGHUP,signal_handler);
+  signal(SIGTERM,signal_handler);
+
+}
+
+int main(int argc, char **argv)
+{
+  daemonize();
+
   curl_global_init(CURL_GLOBAL_ALL);
   cout << "getting assets..." << endl;
   string last_timestamp_spread;
@@ -201,52 +269,23 @@ int main(int argc, char **argv)
   }
   mtxCD.unlock();
   //END Critical Section
-  
+
+  // close out standard file descriptors
+  close(STDIN_FILENO);
+  close(STDOUT_FILENO);
+  close(STDERR_FILENO);
+
   // Threads
   SafePrint{} << "starting threads..." << endl;
-  //try {
   thread order_book_thread(order_book_thread_function,kpair);
   thread ohlcs_thread(ohlcs_thread_function,kpair);
   thread spread_thread(spread_thread_function,kpair);
   thread trades_thread(trades_thread_function,kpair);
-  //} catch(std::exception &e) {
-  //std::cout << "Exception captured : " << e.what() << std::endl;
-  //}
-  
+
   try {
-    
-    //**************************************************
-    /*cout << endl;
-      cout << "TRADES" << endl;
-      std::vector<KTrade> ktrades;
-      cout << client.trades("ETHUSD","0",ktrades) << endl;
-    */
-    //**************************************************
-    /*cout << endl;
-      cout << "SPREAD" << endl;
-      KSpreadStorage kss;
-      cout << client.spread("ETHUSD","0", kss) << endl;
-    */
-    //**************************************************
-    /*cout << endl;
-      cout << "ASSETS" << endl;
-      KAssetsMap kam;
-      cout << client.update_assets(kam) << endl;
-    */
-    //**************************************************
-    /*cout << endl;
-      cout << "OHLC" << endl;
-      KOHLCStorage kohlcs;
-      mtxCD.lock();
-      CD.client.OHLC("ETHUSD","0","1",kohlcs);
-      mtxCD.unlock(); 
-      cout << kohlcs  << endl;*/
-    //**************************************************
-    /*cout << endl;
-      cout << "SERVER TIME" << endl;
-      std::time_t stime;
-      cout << client.server_time(stime) << endl;
-    */
+    while(1){
+      this_thread::sleep_for(chrono::milliseconds(5000));
+    }
   }
   catch(exception& e) {
     SafePrint{} << "Error: " << e.what() << endl;

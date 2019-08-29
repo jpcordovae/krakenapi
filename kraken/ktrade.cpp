@@ -54,7 +54,7 @@ namespace kraken
     ofs.write((char*)&kt.time,sizeof(time_t));
     ofs.write((char*)&kt.otype,sizeof(KTrade::Otype_t));
     ofs.write((char*)&kt.order,sizeof(KTrade::Order_t));
-    ofs << kt.misc;
+    //ofs << kt.misc;
     return ofs;
   }
 
@@ -70,15 +70,16 @@ namespace kraken
     return ofs;
   }
 
-
   //------------------------------------------------------------------------------
 
   std::ifstream& operator>>(std::ifstream &ifs, KTradeStorage &kts)
   {
     size_t size;
+    KTrade kt;
     ifs.read((char*)&size,sizeof(size_t));
     for(size_t k = 0;k<size;k++){
-      ifs >> kts[k];
+      ifs >> kt;
+      kts.push_back(kt);
     }
     return ifs;
   }
@@ -91,7 +92,7 @@ namespace kraken
     ifs.read((char*)&kt.time,sizeof(time_t));
     ifs.read((char*)&kt.otype,sizeof(KTrade::Otype_t));
     ifs.read((char*)&kt.order,sizeof(KTrade::Order_t));
-    ifs >> kt.misc;
+    //ifs >> kt.misc;
     return ifs;
   }
 

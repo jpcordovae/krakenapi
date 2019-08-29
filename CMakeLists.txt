@@ -114,5 +114,5 @@ target_link_libraries(kstatistics ${LIBS} ${CMAKE_THREAD_LIBS_INIT} boost_iostre
 #------------------------------------------------------------------------------
 add_executable(kprocessing_data kprocessing_data.cpp kraken/kclient.cpp kraken/kohlc.cpp kraken/kutils.cpp)
 set_target_properties(kprocessing_data PROPERTIES
-  COMPILE_DEFINITIONS_DEBUG "JSON_DEBUG;JSON_SAFE;JSON_IS_STRICT")
-target_link_libraries(kprocessing_data ${LIBS} ${CMAKE_THREAD_LIBS_INIT} stdc++fs)
+  COMPILE_DEFINITIONS_DEBUG "JSON_DEBUG;JSON_SAFE;JSON_IS_STRICT;JSON_ISO_STRICT")
+target_link_libraries(kprocessing_data ${LIBS} ${CMAKE_THREAD_LIBS_INIT} stdc++fs boost_iostreams boost_system boost_filesystem)
